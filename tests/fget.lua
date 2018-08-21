@@ -84,4 +84,3 @@ function TIC()
  print(fget(2),80,100,3)
  
 end
-
