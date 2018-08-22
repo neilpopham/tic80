@@ -6,5 +6,7 @@ REM and then use dofile("file.lua") in the file.tic file to include that lua fil
 REM This allows us to edit lua in an external editor without affecting sprites, etc.
 
 SET src="%1"
-SET dst="%~nx1"
-MKDIR %src% %dst%
+SET dst="%~dp0%~nx1"
+MKLINK %dst% %src%
+
+PAUSE
