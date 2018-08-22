@@ -14,23 +14,10 @@ local drag={air=1,ground=0.8,gravity=0.15}
 -- https://github.com/nesbox/TIC-80/wiki/key-map
 local pad={l=2,r=3,u=0,d=1,b1=4,b2=5,b3=6,b4=7}
 
-function round(x)
- return flr(x+0.5)
-end
-
---function mid(...)
--- table.sort(arg)
--- return arg[2]
---end
-
-function mid(x,y,z)
- t={x,y,z}
- table.sort(t)
- return t[2]
-end
-
+-- pico-8 functions
+function round(x) return flr(x+0.5) end
+function mid(a,b,c) t={a,b,c} table.sort(t) return t[2] end
 function flr(x) return math.floor(x) end
-
 function abs(x) return math.abs(x) end
 
 function create_item(x,y)

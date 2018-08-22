@@ -1,11 +1,7 @@
 local sprf={}
 
 -- http://pico-8.wikia.com/wiki/Mid
-function mid(x,y,z)
- t={x,y,z}
- table.sort(t)
- return t[2]
-end
+function mid(a,b,c) t={a,b,c} table.sort(t) return t[2] end
 --[[
 function mid(...)
  table.sort(arg)
