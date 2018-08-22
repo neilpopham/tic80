@@ -24,20 +24,20 @@ function fget(s,i)
 end
 
 function fset(s,i,b)
-    if b==nil then
-      sprf[s+1]=i
+  if b==nil then
+    sprf[s+1]=i
+  else
+    local e
+    if sprf[s+1]==nil then
+      sprf[s+1]=0
+      e=false
     else
-      local e
-      if sprf[s+1]==nil then
-        sprf[s+1]=0
-        e=false
-      else
-        e=fget(s,i)
-      end
-      if (e and not b) or (not e and b) then 
-        sprf[s+1]=sprf[s+1]+(b and 2^i or -2^i)
-      end
+      e=fget(s,i)
     end
+    if (e and not b) or (not e and b) then 
+      sprf[s+1]=sprf[s+1]+(b and 2^i or -2^i)
+    end
+  end
 end
 
 function init()
