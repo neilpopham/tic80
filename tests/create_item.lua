@@ -17,8 +17,8 @@ local pad={l=2,r=3,u=0,d=1,b1=4,b2=5,b3=6,b4=7}
 -- pico-8 functions
 function round(x) return flr(x+0.5) end
 function mid(a,b,c) t={a,b,c} table.sort(t) return t[2] end
-function flr(x) return math.floor(x) end
-function abs(x) return math.abs(x) end
+flr=math.floor
+abs=math.abs
 
 function create_item(x,y)
  local i={
@@ -160,15 +160,20 @@ function _init()
  p.anim:init("still",dir.right)
 end
 
-_init()
-
-function TIC()
- cls()
+function _update60()
  p:update()
- p:draw()
+ _draw()
+end
 
+function _draw()
+ cls()
+ p:draw()
  print("current.frame:"..p.anim.current.frame,0,10)
  print("face:"..p.anim.current.face,0,0)
  print("tick:"..p.anim.current.tick,0,20)
  print("dx:"..p.dx,0,30)
-end
+end 
+
+function TIC() _update60() end
+
+_init()
