@@ -45,16 +45,18 @@ function fset(s,i,b)
   end
 end
 
-local dir={left=1,right=2}
-local drag={air=1,ground=0.8,gravity=0.15,wall=0}
-
 -- http://pico-8.wikia.com/wiki/btn
---local pad={l=0,r=1,u=2,d=3,b1=4,b2=5}
-
--- pad_left=0 pad_right=1 pad_up=2 pad_down=3 pad_b1=4 pad_b2=5
+--local pad={left=0,right=1,up=2,down=3,btn1=4,btn2=5}
 
 -- https://github.com/nesbox/tic-80/wiki/key-map
-local pad={l=2,r=3,u=0,d=1,b1=4,b2=5,b3=6,b4=7}
+local pad={left=2,right=3,up=0,down=1,btn1=4,btn2=5,btn3=6,btn4=7}
+
+-- pad_left=0 pad_right=1 pad_up=2 pad_down=3
+-- pad_left=2 pad_right=3 pad_up=0 pad_down=1
+-- pad_b1=4 pad_b2=5 pad_b3=6 pad_b4=7
+
+local dir={left=1,right=2}
+local drag={air=1,ground=0.8,gravity=0.25,wall=0}
 
 function round(x) return flr(x+0.5) end
 
@@ -70,11 +72,16 @@ function create_moveable_item(x,y,ax,ay)
  local i=create_item(x,y)
  i.dx=0
  i.dy=0
- i.min={dx=0.05,dy=0.05,btn=5}
- i.max={dx=1,dy=2,btn=15}
+ i.min={dx=0.05,dy=0.05}
+ i.max={dx=1,dy=2}
  i.ax=ax
  i.ay=ay
- i.is={grounded=false,jumping=false,sliding=false,falling=false}
+ i.is={
+  grounded=false,
+  jumping=false,
+  sliding=false,
+  falling=false
+ }
  i.anim={
   init=function(self,stage,face)
    -- record frame count for each stage face
@@ -123,6 +130,12 @@ function create_moveable_item(x,y,ax,ay)
   end
   camera(x,y)
  end
+ i.set_state=function(self, state)
+  for s in pairs(self.is) do
+   self.is[s]=false
+  end
+  self.is[state]=true
+ end
  i.draw=function(self)
   sprite=self.animate(self)
   spr(sprite,self.x,self.y,0)
@@ -162,7 +175,7 @@ function create_moveable_item(x,y,ax,ay)
    -- note
    -- this won't let us jump off at the moment
    -- need to know we can jump slide
-   -- even if not moving into the wall 
+   -- even if not moving into the wall
    if fget(tile,0) or (flag and fget(tile,flag)) then
     if self.is.grounded then
      self.dx=0
@@ -170,7 +183,7 @@ function create_moveable_item(x,y,ax,ay)
      if fget(tile,1) then
       if self.is.sliding==false then self.dy=0 end
       self.anim.current:set("wall")
-      self.is.sliding=true
+      self:set_state("sliding")
      end
     end
     return false
@@ -188,19 +201,25 @@ function create_moveable_item(x,y,ax,ay)
    if fget(tile,0) then
     if self.dy>0 then
      self.y=(ty-1)*8
-     self.is.grounded=true
-     self.is.sliding=false
-     self.is.falling=false
-     if self.anim.current.stage~="walk_turn" then
+     if self.is.falling then
+      self.btn.tick=0
+     end
+     self:set_state("grounded")
+     if not self.anim.current.transitioning then
       self.anim.current:set(round(self.dx)==0 and "still" or "walk")
      end
     else
      self.y=8+((ty)*8)
+     if self.is.jumping then
+      self:set_state("falling")
+      self.anim.current:set("jump_fall")
+      self.btn.tick=self.max.btn
+      self.dy=0
+     end
     end
     return false
    end
   end
-  self.is.grounded=false
   return true
  end
  return i
@@ -208,6 +227,21 @@ end
 
 function create_controllable_item(x,y,ax,ay)
  local i=create_moveable_item(x,y,ax,ay)
+ i.min.btn=5
+ i.max.btn=20
+ i.btn={tick=0}
+ i.can_jump=function(self)
+  if self.is.jumping and self.btn.tick>0 then
+   return true
+  end
+  if self.is.grounded then
+   return true
+  end
+  if self.is.sliding then
+   return true
+  end
+  return false
+ end
  i.update=function(self)
   local face=self.anim.current.face
   local stage=self.anim.current.stage
@@ -215,6 +249,7 @@ function create_controllable_item(x,y,ax,ay)
   local check=function(self,stage,face)
    if face~=self.anim.current.face then
     if stage=="still" then stage="walk" end
+    if stage=="jump_fall" then stage="fall" end
     if not self.anim.current.transitioning then
      self.anim.current:set(stage.."_turn")
      self.anim.current.transitioning=true
@@ -223,18 +258,16 @@ function create_controllable_item(x,y,ax,ay)
   end
 
   -- horizontal movement
-  if btn(pad.l) then
+  if btn(pad.left) then
    self.anim.current.face=dir.left
    check(self,stage,face)
    self.dx=self.dx-self.ax
-  elseif btn(pad.r) then
+  elseif btn(pad.right) then
    self.anim.current.face=dir.right
    check(self,stage,face)
    self.dx=self.dx+self.ax
   else
-   if self.is.grounded then
-    self.dx=self.dx*drag.ground
-   elseif self.jumping then
+   if self.jumping then
     self.dx=self.dx*drag.air
    else
     self.dx=self.dx*drag.ground
@@ -247,7 +280,7 @@ function create_controllable_item(x,y,ax,ay)
     self.x=self.x+round(self.dx)
     if self.is.sliding then
      self.is.sliding=false
-     if self.anim.current~="fall_turn" then
+     if not self.anim.current.transitioning then
       self.anim.current:set("fall")
      end
     end
@@ -255,6 +288,19 @@ function create_controllable_item(x,y,ax,ay)
   end
 
   -- vertical movement
+  if btn(pad.btn1)
+   and self.can_jump(self) then
+   self.btn.tick=self.btn.tick+1
+  else
+   self.btn.tick=0
+  end
+  if self.btn.tick>=self.min.btn
+   and self.btn.tick<=self.max.btn then
+   self:set_state("jumping")
+   self.anim.current:set("jump")
+   self.dy=self.dy+self.ay
+  end
+
   if self.is.sliding then
    self.dy=self.dy+drag.wall
   else
@@ -265,15 +311,20 @@ function create_controllable_item(x,y,ax,ay)
   if self.dy~=0 then
    if self.canmovey(self) then
     self.y=self.y+round(self.dy)
-    if self.dy>0
-     and self.is.sliding==false and self.is.grounded==false
+    self.is.grounded=false
+    if round(self.dy)>0
+     and self.is.sliding==false
+     and self.is.grounded==false
      and self.is.falling==false then
-     self.anim.current:set("fall")
-     self.is.falling=true
+     if self.is.jumping then
+       self.anim.current:set("jump_fall")
+     else
+       self.anim.current:set("fall")
+     end
+     self:set_state("falling")
     end
    end
   end
-
  end
  return i
 end
@@ -293,12 +344,13 @@ function _init()
  p.anim:add_stage("still",1,false,{6},{12})
  p.anim:add_stage("walk",5,true,{1,2,3,4,5,6},{7,8,9,10,11,12})
  p.anim:add_stage("jump",1,false,{1},{7})
- p.anim:add_stage("fall",1,false,{1},{7})
+ p.anim:add_stage("fall",1,false,{32},{33})
  p.anim:add_stage("wall",1,false,{13},{28})
  p.anim:add_stage("walk_turn",5,false,{20,18,21,6},{17,18,19,12},"still")
  p.anim:add_stage("jump_turn",5,false,{25,26,27},{22,23,24},"jump")
  p.anim:add_stage("fall_turn",5,false,{25,26,27},{22,23,24},"fall")
  p.anim:add_stage("wall_turn",5,false,{29,30,31},{14,15,16},"jump")
+ p.anim:add_stage("jump_fall",5,false,{2,3},{8,9},"fall")
  p.anim:init("still",dir.right)
 
  enemies={{64,64},{24,88},{32,16}}
@@ -312,9 +364,9 @@ function _init()
    self.dx=(self.dx+(self.ax*dir))*drag.ground
    self.dx=mid(-self.max.dx,self.dx,self.max.dx)
    if abs(self.dx)<self.min.dx then self.dx=self.min.dx end
-    if self.anim.current.tick % 2==0 then
-      if self.canmovex(self,2) then
-      self.x=round(self.x+self.dx)
+    if self.anim.current.tick%2==0 then
+        if self.canmovex(self,2) then
+        self.x=round(self.x+self.dx)
     else
      self.dx=0
      self.anim.current.face=self.anim.current.face==1 and 2 or 1
@@ -324,8 +376,14 @@ function _init()
   end
  end
 
-  -- dump fget data to an array format that can be used in tic-80 code
- --d="" for s=0,127 do d=d..fget(s).."," end printh(d,"@clip")
+--[[
+ waters={{64,32},{72,32},{80,32}}
+ for i,water in pairs(waters) do
+  waters[i]=create_moveable_item(water[1],water[2],0,0)
+  waters[i].anim:add_stage("still",5,true,{44,45,46,47},{})
+  waters[i].anim:init("still",dir.left)
+ end 
+]]
 end
 
 function _update60()
@@ -342,12 +400,11 @@ function _draw()
  for _,enemy in pairs(enemies) do enemy:draw() end -- e:draw()
  p:draw()
  --camera(0,0)
- spr(37,114,4)
- spr(38,118,4)
  print("stage:"..p.anim.current.stage,0,106)
  print("dir:"..p.anim.current.face,62,106)
  print("frame:"..p.anim.current.frame,0,113)
  print("t:"..p.anim.current.tick,62,113)
+ print("b:"..p.btn.tick,62,120)
  print("dx:"..p.dx,0,120) print("dy:"..p.dy,20,120)
  print("grounded:"..(p.is.grounded and "t" or "f"),86,106)
  print("jumping:"..(p.is.jumping and "t" or "f"),86,113)
