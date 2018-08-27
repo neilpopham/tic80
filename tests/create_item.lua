@@ -5,8 +5,6 @@
 -- input:  gamepad
 -- saveid: ntp_create_item
 
-sprf={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,3,1,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}
-
 -- http://pico-8.wikia.com/wiki/Mid
 function mid(a,b,c) t={a,b,c} table.sort(t) return t[2] end
 
@@ -15,6 +13,8 @@ flr=math.floor
 
 -- http://pico-8.wikia.com/wiki/Abs
 abs=math.abs
+
+sprf={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,3,1,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}
 
 -- http://pico-8.wikia.com/wiki/Fget
 function fget(s,i)
@@ -125,7 +125,7 @@ function create_moveable_item(x,y,ax,ay)
  end
  i.draw=function(self)
   sprite=self.animate(self)
-  spr(sprite,self.x,self.y)
+  spr(sprite,self.x,self.y,0)
  end
  i.animate=function(self)
   local current=self.anim.current
