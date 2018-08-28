@@ -14,7 +14,7 @@ flr=math.floor
 -- http://pico-8.wikia.com/wiki/Abs
 abs=math.abs
 
-sprf={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,3,1,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}
+local sprf={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,3,1,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}
 
 -- http://pico-8.wikia.com/wiki/Fget
 function fget(s,i)
@@ -340,7 +340,7 @@ function create_stage(ticks,loop,left,right,next)
 end
 
 function _init()
- p=create_controllable_item(40,0,0.1,-1.75)
+ p=create_controllable_item(60,20,0.1,-1.75)
  p.anim:add_stage("still",1,false,{6},{12})
  p.anim:add_stage("walk",5,true,{1,2,3,4,5,6},{7,8,9,10,11,12})
  p.anim:add_stage("jump",1,false,{1},{7})
@@ -376,19 +376,18 @@ function _init()
   end
  end
 
---[[
  waters={{64,32},{72,32},{80,32}}
  for i,water in pairs(waters) do
   waters[i]=create_moveable_item(water[1],water[2],0,0)
   waters[i].anim:add_stage("still",5,true,{44,45,46,47},{})
   waters[i].anim:init("still",dir.left)
  end 
-]]
+
 end
 
 function _update60()
  p:update()
- for _,enemy in pairs(enemies) do enemy:update() end -- e:update()
+ --for _,enemy in pairs(enemies) do enemy:update() end -- e:update()
  _draw()
 end
 
@@ -396,10 +395,12 @@ function _draw()
  cls()
  
  --p:camera()
- map(0,0)
- for _,enemy in pairs(enemies) do enemy:draw() end -- e:draw()
+ map(0,0)--map(0,14)
+ --for _,enemy in pairs(enemies) do enemy:draw() end -- e:draw()
  p:draw()
  --camera(0,0)
+
+ --[[
  print("stage:"..p.anim.current.stage,0,106)
  print("dir:"..p.anim.current.face,62,106)
  print("frame:"..p.anim.current.frame,0,113)
@@ -409,11 +410,7 @@ function _draw()
  print("grounded:"..(p.is.grounded and "t" or "f"),86,106)
  print("jumping:"..(p.is.jumping and "t" or "f"),86,113)
  print("sliding:"..(p.is.sliding and "t" or "f"),86,120)
---[[
- print(e.dx,0,0)
- print(e.anim.current.stage,0,10)
- print(e.anim.current.face,0,20)
-]]
+]] 
 end
 
 function TIC() _update60() end
