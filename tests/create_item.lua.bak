@@ -16,24 +16,10 @@ flr=math.floor
 -- http://pico-8.wikia.com/wiki/Abs
 abs=math.abs
 
-<<<<<<< HEAD
--- http://pico-8.wikia.com/wiki/Sub
-function sub(string, s, i) return string.sub(string, s, i) end
-
--- http://pico-8.wikia.com/wiki/Min
-min=math.min
-
--- http://pico-8.wikia.com/wiki/Max
-max=math.max
-
--- __gff__ data
-sprf={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,3,1,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}
-=======
 --http://pico-8.wikia.com/wiki/Sub
 function sub(str,i,j) return str:sub(i,j) end
 
 local sprf={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,3,1,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}
->>>>>>> c5d9010413795791d41380f38b529945c2258701
 
 -- http://pico-8.wikia.com/wiki/Fget
 function fget(s,i)
@@ -67,59 +53,17 @@ end
 -- http://pico-8.wikia.com/wiki/btn
 --local pad={left=0,right=1,up=2,down=3,btn1=4,btn2=5}
 
--- http://pico-8.wikia.com/wiki/btn
--- local pad={left=0,right=1,up=2,down=3,btn1=4,btn2=5}
-
 -- https://github.com/nesbox/tic-80/wiki/key-map
 local pad={left=2,right=3,up=0,down=1,btn1=4,btn2=5,btn3=6,btn4=7}
 
+-- pad_left=0 pad_right=1 pad_up=2 pad_down=3
+-- pad_left=2 pad_right=3 pad_up=0 pad_down=1
+-- pad_b1=4 pad_b2=5 pad_b3=6 pad_b4=7
+
 local dir={left=1,right=2}
-local drag={air=1,ground=0.8,gravity=0.25,wall=0.05}
+local drag={air=1,ground=0.8,gravity=0.25,wall=0}
 
 function round(x) return flr(x+0.5) end
-
-function create_camera(item)
- local c={
-  target=item,
-  x=item.x,
-  y=item.y,
-  buffer=16,
-  min={x=64,y=64},
-  max={x=128,y=128,shift=2}
- }
- c.update=function(self)
-  local min_x = self.x-self.buffer
-  local max_x = self.x+self.buffer
-  local min_y = self.y-self.buffer
-  local max_y = self.y+self.buffer
-  if min_x>self.target.x then
-   self.x=self.x+min(self.target.x-min_x,self.max.shift)
-  end
-  if max_x<self.target.x then
-   self.x=self.x+min(self.target.x-max_x,self.max.shift)
-  end
-  if min_y>self.target.y then
-   self.y=self.y+min(self.target.y-min_y,self.max.shift)
-  end
-  if max_y<self.target.y then
-   self.y=self.y+min(self.target.y-max_y,self.max.shift)
-  end
-  if self.x<self.min.x then
-   self.x=self.min.x
-  elseif self.x>self.max.x then
-   self.x=self.max.x
-  end
-  if self.y<self.min.y then
-   self.y=self.min.y
-  elseif self.y>self.max.y then
-   self.y=self.max.y
-  end
- end
- c.position=function(self)
-  return self.x-64,self.y-64
- end
- return c
-end
 
 function create_item(x,y)
  local i={
@@ -134,16 +78,14 @@ function create_moveable_item(x,y,ax,ay)
  i.dx=0
  i.dy=0
  i.min={dx=0.05,dy=0.05}
- i.max={dx=1,dy=2,slide=15}
- i.slide={tick=0}
+ i.max={dx=1,dy=2}
  i.ax=ax
  i.ay=ay
  i.is={
   grounded=false,
   jumping=false,
   sliding=false,
-  falling=false,
-  invisible=false
+  falling=false
  }
  i.anim={
   init=function(self,stage,face)
@@ -175,6 +117,24 @@ function create_moveable_item(x,y,ax,ay)
    self.stage[name]=create_stage(ticks,loop,left,right,next)
   end
  }
+ i.camera=function(self)
+  local x local y
+  if self.x<64 then
+   x=0
+  elseif self.x>1024 then
+   x=900
+  else
+   x=self.x-64
+  end
+  if self.y<64 then
+   y=0
+  elseif self.y>1024 then
+   y=900
+  else
+   y=self.y-64
+  end
+  camera(x,y)
+ end
  i.set_state=function(self, state)
   for s in pairs(self.is) do
    self.is[s]=false
@@ -182,17 +142,13 @@ function create_moveable_item(x,y,ax,ay)
   self.is[state]=true
  end
  i.draw=function(self)
-  if self.is.invisible then return end
   sprite=self.animate(self)
-  spr(sprite,self.x,self.y)
-  if self.is.sliding then
-   sprite=self.smoke:animate()
-   spr(sprite,self.x,self.y-8)
-  end
+  spr(sprite,self.x,self.y,0)
  end
  i.animate=function(self)
   local current=self.anim.current
   local stage=self.anim.stage[current.stage]
+  assert(stage~=nil,"stage is "..current.stage) -- ###################################
   local face=stage.face[current.face]
   if current.loop then
    current.tick=current.tick+1
@@ -214,25 +170,23 @@ function create_moveable_item(x,y,ax,ay)
   end
   return face.frames[current.frame]
  end
- i.can_move_x=function(self,flag)
+ i.canmovex=function(self,flag)
   local x=self.x+round(self.dx)
   if self.dx>0 then x=x+7 end
   for _,y in pairs({self.y,self.y+7}) do
    local tx=flr(x/8)
    local ty=flr(y/8)
    tile=mget(tx,ty)
+   -- note
+   -- this won't let us jump off at the moment
+   -- need to know we can jump slide
+   -- even if not moving into the wall
    if fget(tile,0) or (flag and fget(tile,flag)) then
     if self.is.grounded then
      self.dx=0
     else
      if fget(tile,1) then
-      if self.is.sliding==false then
-       self.dy=0
-       self.slide.tick=self.max.slide
-      end
-      local face=self.dx<0 and 1 or 2
-      self.anim.current.face=face
-      self.smoke.anim.current.face=face
+      if self.is.sliding==false then self.dy=0 end
       self.anim.current:set("wall")
       self:set_state("sliding")
      end
@@ -240,12 +194,9 @@ function create_moveable_item(x,y,ax,ay)
     return false
    end
   end
-  if self.is.sliding then
-   self.is.sliding=false
-  end
   return true
  end
- i.can_move_y=function(self)
+ i.canmovey=function(self)
   local y=self.y+round(self.dy)
   if self.dy>0 then y=y+7 end
   for _,x in pairs({self.x,self.x+7}) do
@@ -259,12 +210,11 @@ function create_moveable_item(x,y,ax,ay)
       self.btn.tick=0
      end
      self:set_state("grounded")
-     self.slide.tick=0
      if not self.anim.current.transitioning then
       self.anim.current:set(round(self.dx)==0 and "still" or "walk")
      end
     else
-     self.y=8+(ty*8)
+     self.y=8+((ty)*8)
      if self.is.jumping then
       self:set_state("falling")
       self.anim.current:set("jump_fall")
@@ -286,16 +236,13 @@ function create_controllable_item(x,y,ax,ay)
  i.max.btn=20
  i.btn={tick=0}
  i.can_jump=function(self)
-  if self.is.jumping
-   and self.btn.tick>0 then
+  if self.is.jumping and self.btn.tick>0 then
    return true
   end
   if self.is.grounded then
    return true
   end
-  if self.is.falling
-   and self.dx~=0
-   and self.slide.tick>0 then
+  if self.is.sliding then
    return true
   end
   return false
@@ -304,7 +251,6 @@ function create_controllable_item(x,y,ax,ay)
   local face=self.anim.current.face
   local stage=self.anim.current.stage
 
-  -- checks for direction change
   local check=function(self,stage,face)
    if face~=self.anim.current.face then
     if stage=="still" then stage="walk" end
@@ -326,22 +272,23 @@ function create_controllable_item(x,y,ax,ay)
    check(self,stage,face)
    self.dx=self.dx+self.ax
   else
-   if self.is.jumping then
+   if self.jumping then
     self.dx=self.dx*drag.air
    else
     self.dx=self.dx*drag.ground
-    if self.is.sliding then
-     self.dx=0
-     self:set_state("falling")
-     self.anim.current:set("fall")
-    end
    end
   end
   self.dx=mid(-self.max.dx,self.dx,self.max.dx)
   if abs(self.dx)<self.min.dx then self.dx=0 end
   if self.dx~=0 then
-   if self.can_move_x(self) then
+   if self.canmovex(self) then
     self.x=self.x+round(self.dx)
+    if self.is.sliding then
+     self.is.sliding=false
+     if not self.anim.current.transitioning then
+      self.anim.current:set("fall")
+     end
+    end
    end
   end
 
@@ -358,39 +305,31 @@ function create_controllable_item(x,y,ax,ay)
    self.anim.current:set("jump")
    self.dy=self.dy+self.ay
   end
+
   if self.is.sliding then
    self.dy=self.dy+drag.wall
   else
    self.dy=self.dy+drag.gravity
-   if self.is.falling then
-    self.slide.tick=max(self.slide.tick-1,0)
-   elseif self.is.grounded then
-    self.slide.tick=0
-   end
   end
   self.dy=mid(-self.max.dy,self.dy,self.max.dy)
   if abs(self.dy)<self.min.dy then self.dy=0 end
   if self.dy~=0 then
-   if self.can_move_y(self) then
+   if self.canmovey(self) then
     self.y=self.y+round(self.dy)
     self.is.grounded=false
-    if round(self.dy)>0 then
-     if self.is.sliding then
-      if self.dy==self.max.dy then
-       self.slide.tick=max(self.slide.tick-1,0)
-      end
-     else
-      if self.is.jumping then
+    if round(self.dy)>0
+     and self.is.sliding==false
+     and self.is.grounded==false
+     and self.is.falling==false then
+     if self.is.jumping then
        self.anim.current:set("jump_fall")
-      else
+     else
        self.anim.current:set("fall")
-      end
-      self:set_state("falling")
      end
+     self:set_state("falling")
     end
    end
   end
-
  end
  return i
 end
@@ -406,13 +345,7 @@ function create_stage(ticks,loop,left,right,next)
 end
 
 function _init()
-<<<<<<< HEAD
-
- -- player
- p=create_controllable_item(120,232,0.1,-1.75)
-=======
  p=create_controllable_item(60,20,0.1,-1.75)
->>>>>>> c5d9010413795791d41380f38b529945c2258701
  p.anim:add_stage("still",1,false,{6},{12})
  p.anim:add_stage("walk",5,true,{1,2,3,4,5,6},{7,8,9,10,11,12})
  p.anim:add_stage("jump",1,false,{1},{7})
@@ -421,51 +354,10 @@ function _init()
  p.anim:add_stage("walk_turn",5,false,{20,18,21,6},{17,18,19,12},"still")
  p.anim:add_stage("jump_turn",5,false,{25,26,27},{22,23,24},"jump")
  p.anim:add_stage("fall_turn",5,false,{25,26,27},{22,23,24},"fall")
- p.anim:add_stage("wall_turn",5,false,{29,30,31},{14,15,16},"fall")
+ p.anim:add_stage("wall_turn",5,false,{29,30,31},{14,15,16},"jump")
  p.anim:add_stage("jump_fall",5,false,{2,3},{8,9},"fall")
  p.anim:init("still",dir.right)
 
- -- player wall slide smoke
- p.smoke=create_controllable_item(0,0,0,0)
- p.smoke.anim:add_stage("smoking",4,true,{34,35},{36,37})
- p.smoke.anim:init("smoking",dir.right)
-
- -- camera
- p.camera=create_camera(p)
-
- -- replace map placeholders
- gem_count=0
- gem_total=0
- gems={}
- local x local y
- for x=0,63 do for y=0,31 do
-  local s=mget(x,y)
-  if s==62 then
-   gem_total=gem_total+1
-   mset(x,y,0)
-   local g=create_moveable_item(x*8,y*8,0,0)
-   g.anim:add_stage("still",1,false,{62},{})
-   g.anim:init("still",dir.left)
-   g.update=function(self)
-    if self.is.invisible then return end
-    if p.x<self.x+7
-     and p.x+8>self.x
-     and p.y<self.y+7
-     and p.y+8>self.y then
-     self.is.invisible=true
-     gem_count=gem_count+1
-    end
-   end
-   gems[#gems+1]=g
-  end
-  if s==p.anim.current.frame then
-   mset(x,y,0)
-   p.x=x*8
-   p.y=y*8
-  end
- end end
- 
---[[
  enemies={{64,64},{24,88},{32,16}}
  for i,enemy in pairs(enemies) do
   enemies[i]=create_moveable_item(enemy[1],enemy[2],0.2,-1.75)
@@ -477,9 +369,9 @@ function _init()
    self.dx=(self.dx+(self.ax*dir))*drag.ground
    self.dx=mid(-self.max.dx,self.dx,self.max.dx)
    if abs(self.dx)<self.min.dx then self.dx=self.min.dx end
-   if self.anim.current.tick%2==0 then
-    if self.can_move_x(self,2) then
-     self.x=round(self.x+self.dx)
+    if self.anim.current.tick%2==0 then
+        if self.canmovex(self,2) then
+        self.x=round(self.x+self.dx)
     else
      self.dx=0
      self.anim.current.face=self.anim.current.face==1 and 2 or 1
@@ -487,66 +379,25 @@ function _init()
     end
    end
   end
- end 
+ end
 
  waters={{64,32},{72,32},{80,32}}
  for i,water in pairs(waters) do
   waters[i]=create_moveable_item(water[1],water[2],0,0)
   waters[i].anim:add_stage("still",5,true,{44,45,46,47},{})
   waters[i].anim:init("still",dir.left)
-<<<<<<< HEAD
- end
-]]
-
- -- dump fget data to an array format that can be used in tic-80 code
- -- d="" for s=0,127 do d=d..fget(s).."," end printh(d,"@clip")
-=======
  end 
 
->>>>>>> c5d9010413795791d41380f38b529945c2258701
 end
 
 function _update60()
  p:update()
-<<<<<<< HEAD
- p.camera:update()
- for _,gem in pairs(gems) do gem:update() end
- --for _,enemy in pairs(enemies) do enemy:update() end
-=======
  --for _,enemy in pairs(enemies) do enemy:update() end -- e:update()
->>>>>>> c5d9010413795791d41380f38b529945c2258701
  _draw()
 end
 
 function _draw()
  cls()
-<<<<<<< HEAD
- --camera(p.camera:position())
- map(0,0)
- --for _,enemy in pairs(enemies) do enemy:draw() end
- --for _,water in pairs(waters) do water:draw() end
- for _,gem in pairs(gems) do gem:draw() end
- p:draw()
- --camera(0,0)
- spr(62,98,1)
- print(sub("0"..gem_count,-2).."'"..gem_total,107,2)
-
---[[
- print("stage:"..p.anim.current.stage,0,0)
- print("dir:"..p.anim.current.face,62,0)
- print("frame:"..p.anim.current.frame,0,7)
- print("t:"..p.anim.current.tick,62,7)
- print("b:"..p.btn.tick,62,14)
- print("dx:"..p.dx,0,14) print("dy:"..p.dy,30,14)
- print("grounded:"..(p.is.grounded and "t" or "f"),86,0)
- print("jumping:"..(p.is.jumping and "t" or "f"),86,7)
- print("falling:"..(p.is.falling and "t" or "f"),86,14)
- print("sliding:"..(p.is.sliding and "t" or "f"),86,21)
-
- print("camera:"..p.camera.x..","..p.camera.y,0,21)
- print("slide:"..p.slide.tick,0,28)
---]]
-=======
  
  --p:camera()
  map(0,0)--map(0,14)
@@ -565,7 +416,6 @@ function _draw()
  print("jumping:"..(p.is.jumping and "t" or "f"),86,113)
  print("sliding:"..(p.is.sliding and "t" or "f"),86,120)
 ]] 
->>>>>>> c5d9010413795791d41380f38b529945c2258701
 end
 
 function TIC() _update60() end
