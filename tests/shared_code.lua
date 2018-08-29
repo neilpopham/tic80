@@ -7,9 +7,9 @@
 p8=type(camera)=="function"
 
 if p8 then
- pad={l=0,r=1,u=2,d=3,b1=4,b2=5}
+ pad={left=0,right=1,up=2,down=3,btn1=4,btn2=5}
 else
- pad={l=2,r=3,u=0,d=1,b1=4,b2=5,b3=6,b4=7}
+ pad={left=2,right=3,up=0,down=1,btn1=4,btn2=5,btn3=6,btn4=7}
 end
 
 function _init()
@@ -34,6 +34,7 @@ if p8==false then
 
  -- declare missing functions
  function mid(a,b,c) t={a,b,c} table.sort(t) return t[2] end
+ function sub(str,i,j) return str:sub(i,j) end
  flr=math.floor
  abs=math.abs 
 
