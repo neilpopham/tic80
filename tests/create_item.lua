@@ -16,7 +16,6 @@ flr=math.floor
 -- http://pico-8.wikia.com/wiki/Abs
 abs=math.abs
 
-<<<<<<< HEAD
 -- http://pico-8.wikia.com/wiki/Sub
 function sub(string, s, i) return string.sub(string, s, i) end
 
@@ -28,12 +27,11 @@ max=math.max
 
 -- __gff__ data
 sprf={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,3,1,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}
-=======
+
 --http://pico-8.wikia.com/wiki/Sub
 function sub(str,i,j) return str:sub(i,j) end
 
 local sprf={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,3,1,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}
->>>>>>> c5d9010413795791d41380f38b529945c2258701
 
 -- http://pico-8.wikia.com/wiki/Fget
 function fget(s,i)
@@ -65,13 +63,10 @@ function fset(s,i,b)
 end
 
 -- http://pico-8.wikia.com/wiki/btn
---local pad={left=0,right=1,up=2,down=3,btn1=4,btn2=5}
-
--- http://pico-8.wikia.com/wiki/btn
--- local pad={left=0,right=1,up=2,down=3,btn1=4,btn2=5}
+local pad={left=0,right=1,up=2,down=3,btn1=4,btn2=5}
 
 -- https://github.com/nesbox/tic-80/wiki/key-map
-local pad={left=2,right=3,up=0,down=1,btn1=4,btn2=5,btn3=6,btn4=7}
+-- local pad={left=2,right=3,up=0,down=1,btn1=4,btn2=5,btn3=6,btn4=7}
 
 local dir={left=1,right=2}
 local drag={air=1,ground=0.8,gravity=0.25,wall=0.05}
@@ -406,13 +401,9 @@ function create_stage(ticks,loop,left,right,next)
 end
 
 function _init()
-<<<<<<< HEAD
 
  -- player
  p=create_controllable_item(120,232,0.1,-1.75)
-=======
- p=create_controllable_item(60,20,0.1,-1.75)
->>>>>>> c5d9010413795791d41380f38b529945c2258701
  p.anim:add_stage("still",1,false,{6},{12})
  p.anim:add_stage("walk",5,true,{1,2,3,4,5,6},{7,8,9,10,11,12})
  p.anim:add_stage("jump",1,false,{1},{7})
@@ -494,33 +485,23 @@ function _init()
   waters[i]=create_moveable_item(water[1],water[2],0,0)
   waters[i].anim:add_stage("still",5,true,{44,45,46,47},{})
   waters[i].anim:init("still",dir.left)
-<<<<<<< HEAD
  end
 ]]
 
  -- dump fget data to an array format that can be used in tic-80 code
  -- d="" for s=0,127 do d=d..fget(s).."," end printh(d,"@clip")
-=======
- end 
-
->>>>>>> c5d9010413795791d41380f38b529945c2258701
 end
 
 function _update60()
  p:update()
-<<<<<<< HEAD
  p.camera:update()
  for _,gem in pairs(gems) do gem:update() end
  --for _,enemy in pairs(enemies) do enemy:update() end
-=======
- --for _,enemy in pairs(enemies) do enemy:update() end -- e:update()
->>>>>>> c5d9010413795791d41380f38b529945c2258701
  _draw()
 end
 
 function _draw()
  cls()
-<<<<<<< HEAD
  --camera(p.camera:position())
  map(0,0)
  --for _,enemy in pairs(enemies) do enemy:draw() end
@@ -546,28 +527,7 @@ function _draw()
  print("camera:"..p.camera.x..","..p.camera.y,0,21)
  print("slide:"..p.slide.tick,0,28)
 --]]
-=======
- 
- --p:camera()
- map(0,0)--map(0,14)
- --for _,enemy in pairs(enemies) do enemy:draw() end -- e:draw()
- p:draw()
- --camera(0,0)
-
- --[[
- print("stage:"..p.anim.current.stage,0,106)
- print("dir:"..p.anim.current.face,62,106)
- print("frame:"..p.anim.current.frame,0,113)
- print("t:"..p.anim.current.tick,62,113)
- print("b:"..p.btn.tick,62,120)
- print("dx:"..p.dx,0,120) print("dy:"..p.dy,20,120)
- print("grounded:"..(p.is.grounded and "t" or "f"),86,106)
- print("jumping:"..(p.is.jumping and "t" or "f"),86,113)
- print("sliding:"..(p.is.sliding and "t" or "f"),86,120)
-]] 
->>>>>>> c5d9010413795791d41380f38b529945c2258701
 end
-
 function TIC() _update60() end
 
 _init()
