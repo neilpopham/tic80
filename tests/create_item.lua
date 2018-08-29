@@ -5,6 +5,8 @@
 -- input:  gamepad
 -- saveid: ntp_create_item
 
+--  use tic create_item.tic -code create_item.lua command line parameters to inject the code to the cartridge once finished
+
 -- http://pico-8.wikia.com/wiki/Mid
 function mid(a,b,c) t={a,b,c} table.sort(t) return t[2] end
 
