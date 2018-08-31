@@ -64,16 +64,16 @@ function create_camera(item,x,y)
   target=item,
   x=item.x,
   y=item.y,
-  buffer=16,
+  buffer={x=32,y=16},
   min={x=8*flr(screen.width/16),y=8*flr(screen.height/16)},
+  max={x=x-screen.width,y=y-screen.height,shift=2},
   tiles={width=flr(screen.width/8),height=flr(screen.height/8)},
   cell={},
   offset={}
  }
- c.max={x=x-screen.width,y=y-screen.height,shift=2}
  c.map=function(self)
-  self.cell.x=math.floor(self.x/8)
-  self.cell.y=math.floor(self.y/8)
+  self.cell.x=flr(self.x/8)
+  self.cell.y=flr(self.y/8)
   self.offset.x=-(self.x%8)
   self.offset.y=-(self.y%8)
   map(
@@ -87,12 +87,28 @@ function create_camera(item,x,y)
   )
  end 
  c.update=function(self)
-  self.x=mid(self.max.x,0,self.target.x-self.min.x)
-  self.y=mid(self.max.y,0,self.target.y-self.min.y)
+  self.min_x=self.x+self.min.x-self.buffer.x
+  self.max_x=self.x+self.min.x+self.buffer.x
+  self.min_y=self.y+self.min.y-self.buffer.y
+  self.max_y=self.y+self.min.y+self.buffer.y
+  if self.min_x>self.target.x then
+   self.x=self.x+min(self.target.x-self.min_x,self.max.shift)
+  end
+  if self.max_x<self.target.x then
+   self.x=self.x+min(self.target.x-self.max_x,self.max.shift)
+  end
+  if self.min_y>self.target.y then
+   self.y=self.y+min(self.target.y-self.min_y,self.max.shift)
+  end
+  if self.max_y<self.target.y then
+   self.y=self.y+min(self.target.y-self.max_y,self.max.shift)
+  end
+  self.x=mid(0,self.x,self.max.x)
+  self.y=mid(0,self.y,self.max.y)
  end
  c.spr=function(self,sprite,x,y)
   spr(sprite,x-self.x,y-self.y,0)
- end   
+ end
  return c
 end
 
