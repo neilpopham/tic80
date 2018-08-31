@@ -1,4 +1,5 @@
 flr=math.floor
+ceil=math.ceil
 abs=math.abs
 min=math.min
 max=math.max
@@ -12,16 +13,16 @@ function create_camera(item,x,y)
   target=item,
   x=item.x,
   y=item.y,
-  buffer=32,
+  buffer={x=32,y=16},
   min={x=8*flr(screen.width/16),y=8*flr(screen.height/16)},
+  max={x=x-screen.width,y=y-screen.height,shift=2},
   tiles={width=flr(screen.width/8),height=flr(screen.height/8)},
   cell={},
   offset={}
  }
- c.max={x=x-screen.width,y=y-screen.height,shift=2}
  c.map=function(self)
-  self.cell.x=math.floor(self.x/8)
-  self.cell.y=math.floor(self.y/8)
+  self.cell.x=flr(self.x/8)
+  self.cell.y=flr(self.y/8)
   self.offset.x=-(self.x%8)
   self.offset.y=-(self.y%8)
   map(
@@ -35,10 +36,10 @@ function create_camera(item,x,y)
   )
  end 
  c.update=function(self)
-  self.min_x = self.x+self.min.x-self.buffer
-  self.max_x = self.x+self.min.x+self.buffer
-  self.min_y = self.y+self.min.y-self.buffer
-  self.max_y = self.y+self.min.y+self.buffer
+  self.min_x=self.x+self.min.x-self.buffer.x
+  self.max_x=self.x+self.min.x+self.buffer.x
+  self.min_y=self.y+self.min.y-self.buffer.y
+  self.max_y=self.y+self.min.y+self.buffer.y
   if self.min_x>self.target.x then
    self.x=self.x+min(self.target.x-self.min_x,self.max.shift)
   end
@@ -92,29 +93,31 @@ function _draw()
 
  p.camera:spr(4,160,160)
 
- print("player.x:"..p.x, 0, 0)
- print("y:"..p.y, 100, 0)
+ print("player.x: "..p.x, 0, 0)
+ print("y: "..p.y, 100, 0)
 
- print("camera.x:"..p.camera.x, 0, 7)
- print("y:"..p.camera.y, 100, 7)
-
-
- print("cell.x:"..p.camera.cell.x,0,14)
- print("y:"..p.camera.cell.y,100,14)
-
- print("offset.x:"..p.camera.offset.x,0,21)
- print("y:"..p.camera.offset.y,100,21)
+ print("camera.x: "..p.camera.x, 0, 7)
+ print("y: "..p.camera.y, 100, 7)
 
 
- print("min.x:"..p.camera.min.x,0,30)
- print("y:"..p.camera.min.y,100,30)
+ print("cell.x: "..p.camera.cell.x,0,14)
+ print("y: "..p.camera.cell.y,100,14)
 
- print("min_x:"..p.camera.min_x,0,50)
- print("max_x:"..p.camera.max_x,0,57)
- print("min_y:"..p.camera.min_y,0,64)
- print("max_y:"..p.camera.max_y,0,71)
+ print("offset.x: "..p.camera.offset.x,0,21)
+ print("y: "..p.camera.offset.y,100,21)
 
- --mset(math.floor(p.x/8), math.floor(p.y/8), 4)
+
+ print("min.x: "..p.camera.min.x,0,30)
+ print("y: "..p.camera.min.y,100,30)
+ print("max.x: "..p.camera.max.x,0,37)
+ print("y: "..p.camera.max.y,100,37)
+
+ print("min_x: "..p.camera.min_x,0,50)
+ print("max_x: "..p.camera.max_x,0,57)
+ print("min_y: "..p.camera.min_y,0,64)
+ print("max_y: "..p.camera.max_y,0,71)
+
+ --mset(flr(p.x/8), flr(p.y/8), 4)
 
 end
 
