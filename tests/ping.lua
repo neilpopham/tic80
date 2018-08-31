@@ -62,32 +62,57 @@ local drag={air=1,ground=0.8,gravity=0.25,wall=0.05}
 
 function round(x) return flr(x+0.5) end
 
-function create_camera(item)
+function create_camera(item,x,y)
  local c={
   target=item,
   x=item.x,
   y=item.y,
   buffer=16,
-  min={x=flr(screen.width/2),y=flr(screen.height/2)},
-  max={x=500,y=500,shift=2},
-  tiles={width=flr(screen.width/8),height=flr(screen.height/8)}
+  min={x=8*flr(screen.width/16),y=8*flr(screen.height/16)},
+  tiles={width=flr(screen.width/8),height=flr(screen.height/8)},
+  cell={},
+  offset={}
  }
- c.update=function(self)
-  self.x=math.min(120,120-p.x)
-  self.y=math.min(64,64-p.y)
- end
+ c.max={x=x-screen.width,y=y-screen.height,shift=2}
  c.map=function(self)
-  self.ccx=self.x/8+(self.x%8==0 and 1 or 0)
-  self.ccy=self.y/8+(self.y%8==0 and 1 or 0)
+  x=self.x
+  y=self.y
+  self.cell.x=math.floor(x/8)
+  self.cell.y=math.floor(y/8)
+  self.offset.x=-(x%8)
+  self.offset.y=-(y%8)
   map(
-   15-self.ccx,
-   8-self.ccy,
-   31,
-   18,
-   (self.x%8)-8,
-   (self.y%8)-8,
+   self.cell.x,
+   self.cell.y,
+   self.tiles.width+1,
+   self.tiles.height+1,
+   self.offset.x,
+   self.offset.y,
    0
   )
+ end 
+ c.update=function(self)
+  self.min_x = self.x+self.min.x-self.buffer
+  self.max_x = self.x+self.min.x+self.buffer
+  self.min_y = self.y+self.min.y-self.buffer
+  self.max_y = self.y+self.min.y+self.buffer
+  if self.min_x>self.target.x then
+   self.x=self.x+min(self.target.x-self.min_x,self.max.shift)
+  end
+  if self.max_x<self.target.x then
+   self.x=self.x+min(self.target.x-self.max_x,self.max.shift)
+  end
+  if self.min_y>self.target.y then
+   self.y=self.y+min(self.target.y-self.min_y,self.max.shift)
+  end
+  if self.max_y<self.target.y then
+   self.y=self.y+min(self.target.y-self.max_y,self.max.shift)
+  end
+  self.x=mid(0,self.x,self.max.x)
+  self.y=mid(0,self.y,self.max.y)
+ end
+ c.spr=function(self,sprite,x,y)
+  spr(sprite,x-self.x,y-self.y,0)
  end
  return c
 end
@@ -155,10 +180,10 @@ function create_moveable_item(x,y,ax,ay)
  i.draw=function(self)
   if self.is.invisible then return end
   sprite=self.animate(self)
-  spr(sprite,self.x+p.camera.x,self.y+p.camera.y,0)
+  p.camera:spr(sprite,self.x,self.y,0)
   if self.is.sliding then
    sprite=self.smoke:animate()
-   spr(sprite,self.x+p.camera.x,self.y+p.camera.y-8,0)
+   p.camera:spr(sprite,self.x,self.y-8,0)
   end
  end
  i.animate=function(self)
@@ -398,7 +423,7 @@ function _init()
  p.smoke.anim:init("smoking",dir.right)
 
  -- camera
- p.camera=create_camera(p)
+ p.camera=create_camera(p,256,192)
 
  -- replace map placeholders
  gem_count=0
@@ -427,8 +452,8 @@ function _init()
   end
   if s==p.anim.current.frame then
    mset(x,y,0)
-   p.x=(x*8)-120
-   p.y=(y*8)-64
+   p.x=x*8
+   p.y=y*8
   end
  end end
  
@@ -463,9 +488,6 @@ function _init()
   waters[i].anim:init("still",dir.left)
  end
 ]]
-
- -- dump fget data to an array format that can be used in tic-80 code
- -- d="" for s=0,127 do d=d..fget(s).."," end printh(d,"@clip")
 end
 
 function _update60()
@@ -478,7 +500,6 @@ end
 
 function _draw()
  cls()
- --p.camera:camera()
  p.camera:map()
  --for _,enemy in pairs(enemies) do enemy:draw() end
  --for _,water in pairs(waters) do water:draw() end
@@ -488,7 +509,7 @@ function _draw()
  spr(62,205,1,0)
  print(sub("0"..gem_count,-2).."'"..gem_total,214,2)
 
----[[
+--[[
  print("stage:"..p.anim.current.stage,0,0)
  print("dir:"..p.anim.current.face,82,0)
  print("frame:"..p.anim.current.frame,0,7)
