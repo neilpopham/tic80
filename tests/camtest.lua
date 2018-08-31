@@ -3,6 +3,7 @@ abs=math.abs
 min=math.min
 max=math.max
 function mid(a,b,c) t={a,b,c} table.sort(t) return t[2] end
+function round(x) return flr(x+0.5) end
 
 local screen={width=240,height=136}
 
@@ -12,30 +13,44 @@ function create_camera(item,x,y)
   x=item.x,
   y=item.y,
   buffer=16,
-  min={x=flr(screen.width/2)-4,y=flr(screen.height/2)-4},
-  tiles={width=flr(screen.width/8),height=flr(screen.height/8)}
+  min={x=8*flr(screen.width/16),y=8*flr(screen.height/16)},
+  tiles={width=flr(screen.width/8),height=flr(screen.height/8)},
+  cell={},
+  offset={}
  }
- c.max={x=c.min.x+screen.width-x,y=c.min.y+screen.height-y}
+ c.max={x=x-c.min.x,y=y-c.min.y,shift=2}
  c.map=function(self)
-  self.ccx=self.x/8+(self.x%8==0 and 1 or 0)
-  self.ccy=self.y/8+(self.y%8==0 and 1 or 0)
+
+  x=self.x
+  y=self.y
+
+  self.cell.x=math.floor(x/8)
+  self.cell.y=math.floor(y/8)
+  self.offset.x=-(x%8)
+  self.offset.y=-(y%8)
   map(
-   (self.tiles.width/2)-self.ccx,
-   (self.tiles.height/2)-self.ccy,
+   self.cell.x,
+   self.cell.y,
    self.tiles.width+1,
    self.tiles.height+1,
-   (self.x%8)-8,
-   (self.y%8)-8,
+   self.offset.x,
+   self.offset.y,
    0
   )
  end 
  c.update=function(self)
 
+  self.x=math.min(self.min.x, self.target.x-self.min.x)
 
-  self.x=math.min(self.min.x+4,self.min.x-self.target.x)
-  self.y=math.min(self.min.y,self.min.y-self.target.y)
-  self.x=math.max(self.max.x+4,self.x)
-  self.y=math.max(self.max.y,self.y)
+  self.x=max(0,self.target.x-self.min.x)
+  self.y=max(0,self.target.y-self.min.y)
+
+
+ end
+ c.spr=function(self,sprite,x,y)
+  --spr(sprite,x+self.x,y+self.y)
+  --spr(sprite,x,y)
+  spr(sprite,x-self.x,y-self.y)
  end
  c.update222222=function(self)
   self.x=math.min(120,120-self.target.x)
@@ -69,19 +84,7 @@ function create_camera(item,x,y)
   end
   ]]
  end 
- c.map=function(self)
-  self.ccx=self.x/8+(self.x%8==0 and 1 or 0)
-  self.ccy=self.y/8+(self.y%8==0 and 1 or 0)
-  map(
-   flr(self.tiles.width/2)-self.ccx,
-   flr(self.tiles.height/2)-self.ccy,
-   self.tiles.width+1,
-   self.tiles.height+1,
-   (self.x%8)-8,
-   (self.y%8)-8,
-   0
-  )
- end  
+   
  return c
 end
 
@@ -96,6 +99,9 @@ end
 function _init()
   p=create_item(40,40)
   p.camera=create_camera(p,320,192)
+
+  x=0
+  t=0
 end 
 
 function _update60()
@@ -105,31 +111,31 @@ function _update60()
   if btn(3) then p.x=p.x+1 end
   p.camera:update()
   _draw()
+  t=t+1
+  if t%30==0 then x=x+1 end
 end
 
 function _draw()
  cls()
  p.camera:map()
- spr(1,p.x+p.camera.x,p.y+p.camera.y)
+ p.camera:spr(1,p.x,p.y)
 
- print ("camera x:"..p.camera.x,0,0)
- print ("camera y:"..p.camera.y,100,0)
- print ("camera ccx:"..p.camera.ccx,0,8)
- print ("camera ccy:"..p.camera.ccy,100,8) 
+ print("player.x:"..p.x, 0, 0)
+ print("y:"..p.y, 100, 0)
 
- print("min x:"..p.camera.min.x,0,77)
- print("y:"..p.camera.min.y,60,77)
- print("max x:"..p.camera.max.x,0,84)
- print("y:"..p.camera.max.y,60,84)
+ print("camera.x:"..p.camera.x, 0, 7)
+ print("y:"..p.camera.y, 100, 7)
 
- print((p.camera.tiles.width/2)-p.camera.ccx,0,16)
- print((p.camera.tiles.height/2)-p.camera.ccy,0,24)
- print((p.camera.tiles.width/2)-p.camera.ccx,0,32)
- print((p.camera.x%8)-8,0,40)
- print((p.camera.y%8)-8,0,48)
 
- print ("player x:"..p.x,0,100)
- print ("player y:"..p.y,100,100) 
+ print("cell.x:"..p.camera.cell.x,0,14)
+ print("y:"..p.camera.cell.y,100,14)
+
+ print("offset.x:"..p.camera.offset.x,0,21)
+ print("y:"..p.camera.offset.y,100,21)
+
+
+ print("min.x:"..p.camera.min.x,0,30)
+ print("y:"..p.camera.min.y,100,30)
 
 end
 
