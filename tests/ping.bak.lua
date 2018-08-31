@@ -9,7 +9,7 @@
 local sprf={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,3,1,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}
 
 function mid(a,b,c) t={a,b,c} table.sort(t) return t[2] end
-function sub(string, s, i) return string.sub(string, s, i) end
+function sub(string,s,i) return string.sub(string,s,i) end
 flr=math.floor
 abs=math.abs
 min=math.min
@@ -87,21 +87,21 @@ function create_camera(item,x,y)
   )
  end 
  c.update=function(self)
-  self.min_x=self.x+self.min.x-self.buffer.x
-  self.max_x=self.x+self.min.x+self.buffer.x
-  self.min_y=self.y+self.min.y-self.buffer.y
-  self.max_y=self.y+self.min.y+self.buffer.y
-  if self.min_x>self.target.x then
-   self.x=self.x+min(self.target.x-self.min_x,self.max.shift)
+  local min_x=self.x+self.min.x-self.buffer.x
+  local max_x=self.x+self.min.x+self.buffer.x
+  local min_y=self.y+self.min.y-self.buffer.y
+  local max_y=self.y+self.min.y+self.buffer.y
+  if min_x>self.target.x then
+   self.x=self.x+min(self.target.x-min_x,self.max.shift)
   end
-  if self.max_x<self.target.x then
-   self.x=self.x+min(self.target.x-self.max_x,self.max.shift)
+  if max_x<self.target.x then
+   self.x=self.x+min(self.target.x-max_x,self.max.shift)
   end
-  if self.min_y>self.target.y then
-   self.y=self.y+min(self.target.y-self.min_y,self.max.shift)
+  if min_y>self.target.y then
+   self.y=self.y+min(self.target.y-min_y,self.max.shift)
   end
-  if self.max_y<self.target.y then
-   self.y=self.y+min(self.target.y-self.max_y,self.max.shift)
+  if max_y<self.target.y then
+   self.y=self.y+min(self.target.y-max_y,self.max.shift)
   end
   self.x=mid(0,self.x,self.max.x)
   self.y=mid(0,self.y,self.max.y)
@@ -397,7 +397,6 @@ function create_stage(ticks,loop,left,right,next)
 end
 
 function _init()
-
  -- player
  p=create_controllable_item(0,0,0.1,-1.75)
  p.anim:add_stage("still",1,false,{6},{12})
