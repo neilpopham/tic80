@@ -72,9 +72,7 @@ end
 function _init()
   p=create_item(40,40)
   p.camera=create_camera(p,512,256)
-
-  x=0
-  t=0
+  x=160 d=1
 end 
 
 function _update60()
@@ -83,6 +81,11 @@ function _update60()
   if btn(2) then p.x=p.x-1 end
   if btn(3) then p.x=p.x+1 end
   p.camera:update()
+  
+  if x > 280 then d=-1 end
+  if x < 64` then d=1 end
+  x=x+d
+
   _draw()
 end
 
@@ -91,7 +94,7 @@ function _draw()
  p.camera:map()
  p.camera:spr(1,p.x,p.y)
 
- p.camera:spr(4,160,160)
+ p.camera:spr(4,x,160)
 
  print("player.x: "..p.x, 0, 0)
  print("y: "..p.y, 100, 0)
