@@ -36,7 +36,7 @@ if p8==false then
  function mid(a,b,c) t={a,b,c} table.sort(t) return t[2] end
  function sub(str,i,j) return str:sub(i,j) end
  flr=math.floor
- abs=math.abs 
+ abs=math.abs
 
  -- set game loop and initialise manually
  function TIC() _update60() end
