@@ -35,10 +35,6 @@ function create_camera(item,x,y)
    0
   )
  end
- c.update=function(self)
-  self.x=mid(0,self.x,self.max.x)
-  self.y=mid(0,self.y,self.max.y)
- end
  -- simple camera
  c.update=function(self)
    --[[
@@ -47,8 +43,12 @@ function create_camera(item,x,y)
   self.y=math.max(0,self.target.y-self.min.y)
   self.y=math.min(self.y,self.max.y)
   ]]
+  --[[
   self.x=mid(0,self.target.x-self.min.x,self.max.x)
   self.y=mid(0,self.target.y-self.min.y,self.max.y)
+  ]]
+  self.x=math.min(math.max(0,self.target.x-self.min.x),self.max.x)
+  self.y=math.min(math.max(0,self.target.y-self.min.y),self.max.y)
  end
  -- camera with buffer zone
  c.update=function(self)

@@ -41,7 +41,7 @@ function fset(s,i,b)
     else
       e=fget(s,i)
     end
-    if (e and not b) or (not e and b) then 
+    if (e and not b) or (not e and b) then
       sprf[s+1]=sprf[s+1]+(b and 2^i or -2^i)
     end
   end
@@ -69,18 +69,36 @@ function create_camera(item,x,y)
   y=item.y,
   buffer=16,
   min={x=8*flr(screen.width/16),y=8*flr(screen.height/16)},
+  max={x=x-screen.width,y=y-screen.height,shift=2},
   tiles={width=flr(screen.width/8),height=flr(screen.height/8)},
   cell={},
   offset={}
  }
- c.max={x=x-screen.width,y=y-screen.height,shift=2}
+ c.update=function(self)
+  local min_x = self.x+self.min.x-self.buffer
+  local max_x = self.x+self.min.x+self.buffer
+  local min_y = self.y+self.min.y-self.buffer
+  local max_y = self.y+self.min.y+self.buffer
+  if min_x>self.target.x then
+   self.x=self.x+math.min(self.target.x-min_x,self.max.shift)
+  end
+  if max_x<self.target.x then
+   self.x=self.x+math.min(self.target.x-max_x,self.max.shift)
+  end
+  if min_y>self.target.y then
+   self.y=self.y+math.min(self.target.y-min_y,self.max.shift)
+  end
+  if max_y<self.target.y then
+   self.y=self.y+math.min(self.target.y-max_y,self.max.shift)
+  end
+  self.x=math.min(math.max(0,self.x),self.max.x)
+  self.y=math.min(math.max(0,self.y),self.max.y)
+  self.cell.x=flr(self.x/8)
+  self.cell.y=flr(self.y/8)
+  self.offset.x=-(self.x%8)
+  self.offset.y=-(self.y%8)
+ end
  c.map=function(self)
-  x=self.x
-  y=self.y
-  self.cell.x=math.floor(x/8)
-  self.cell.y=math.floor(y/8)
-  self.offset.x=-(x%8)
-  self.offset.y=-(y%8)
   map(
    self.cell.x,
    self.cell.y,
@@ -90,26 +108,6 @@ function create_camera(item,x,y)
    self.offset.y,
    0
   )
- end 
- c.update=function(self)
-  self.min_x = self.x+self.min.x-self.buffer
-  self.max_x = self.x+self.min.x+self.buffer
-  self.min_y = self.y+self.min.y-self.buffer
-  self.max_y = self.y+self.min.y+self.buffer
-  if self.min_x>self.target.x then
-   self.x=self.x+min(self.target.x-self.min_x,self.max.shift)
-  end
-  if self.max_x<self.target.x then
-   self.x=self.x+min(self.target.x-self.max_x,self.max.shift)
-  end
-  if self.min_y>self.target.y then
-   self.y=self.y+min(self.target.y-self.min_y,self.max.shift)
-  end
-  if self.max_y<self.target.y then
-   self.y=self.y+min(self.target.y-self.max_y,self.max.shift)
-  end
-  self.x=mid(0,self.x,self.max.x)
-  self.y=mid(0,self.y,self.max.y)
  end
  c.spr=function(self,sprite,x,y)
   spr(sprite,x-self.x,y-self.y,0)
@@ -456,7 +454,7 @@ function _init()
    p.y=y*8
   end
  end end
- 
+
 --[[
  enemies={{64,64},{24,88},{32,16}}
  for i,enemy in pairs(enemies) do
@@ -479,7 +477,7 @@ function _init()
     end
    end
   end
- end 
+ end
 
  waters={{64,32},{72,32},{80,32}}
  for i,water in pairs(waters) do
