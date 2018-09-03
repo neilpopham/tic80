@@ -58,18 +58,20 @@ function create_camera(item,x,y)
   self.max_y=self.y+self.min.y+self.buffer.y
   if self.min_x>self.target.x then
    self.x=self.x+min(self.target.x-self.min_x,self.max.shift)
-  end
-  if self.max_x<self.target.x then
+  elseif self.max_x<self.target.x then
    self.x=self.x+min(self.target.x-self.max_x,self.max.shift)
   end
   if self.min_y>self.target.y then
    self.y=self.y+min(self.target.y-self.min_y,self.max.shift)
-  end
-  if self.max_y<self.target.y then
+  elseif self.max_y<self.target.y then
    self.y=self.y+min(self.target.y-self.max_y,self.max.shift)
   end
+  --[[
   self.x=mid(0,self.x,self.max.x)
   self.y=mid(0,self.y,self.max.y)
+  ]]
+  self.x=math.min(math.max(0,self.x),self.max.x)
+  self.y=math.min(math.max(0,self.y),self.max.y)
  end
  c.spr=function(self,sprite,x,y)
   spr(sprite,x-self.x,y-self.y,0)
@@ -131,11 +133,13 @@ function _draw()
  print("max.x: "..p.camera.max.x,0,37)
  print("y: "..p.camera.max.y,100,37)
 
- --[[print("min_x: "..p.camera.min_x,0,50)
- print("max_x: "..p.camera.max_x,0,57)
- print("min_y: "..p.camera.min_y,0,64)
- print("max_y: "..p.camera.max_y,0,71)]]
-
+ if type(p.camera.min_x)~=nil then
+  print("min_x: "..p.camera.min_x,0,50)
+  print("max_x: "..p.camera.max_x,0,57)
+  print("min_y: "..p.camera.min_y,0,64)
+  print("max_y: "..p.camera.max_y,0,71)
+ end
+ 
  --mset(flr(p.x/8), flr(p.y/8), 4)
 
 end

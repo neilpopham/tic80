@@ -34,7 +34,23 @@ function create_camera(item,x,y)
    self.offset.y,
    0
   )
- end 
+ end
+ -- simple camera
+ c.update=function(self)
+   --[[
+  self.x=math.max(0,self.target.x-self.min.x)
+  self.x=math.min(self.x,self.max.x)
+  self.y=math.max(0,self.target.y-self.min.y)
+  self.y=math.min(self.y,self.max.y)
+  ]]
+  --[[
+  self.x=mid(0,self.target.x-self.min.x,self.max.x)
+  self.y=mid(0,self.target.y-self.min.y,self.max.y)
+  ]]
+  self.x=math.min(math.max(0,self.target.x-self.min.x),self.max.x)
+  self.y=math.min(math.max(0,self.target.y-self.min.y),self.max.y)
+ end
+ -- camera with buffer zone
  c.update=function(self)
   self.min_x=self.x+self.min.x-self.buffer.x
   self.max_x=self.x+self.min.x+self.buffer.x
@@ -42,18 +58,20 @@ function create_camera(item,x,y)
   self.max_y=self.y+self.min.y+self.buffer.y
   if self.min_x>self.target.x then
    self.x=self.x+min(self.target.x-self.min_x,self.max.shift)
-  end
-  if self.max_x<self.target.x then
+  elseif self.max_x<self.target.x then
    self.x=self.x+min(self.target.x-self.max_x,self.max.shift)
   end
   if self.min_y>self.target.y then
    self.y=self.y+min(self.target.y-self.min_y,self.max.shift)
-  end
-  if self.max_y<self.target.y then
+  elseif self.max_y<self.target.y then
    self.y=self.y+min(self.target.y-self.max_y,self.max.shift)
   end
+  --[[
   self.x=mid(0,self.x,self.max.x)
   self.y=mid(0,self.y,self.max.y)
+  ]]
+  self.x=math.min(math.max(0,self.x),self.max.x)
+  self.y=math.min(math.max(0,self.y),self.max.y)
  end
  c.spr=function(self,sprite,x,y)
   spr(sprite,x-self.x,y-self.y,0)
@@ -73,7 +91,7 @@ function _init()
   p=create_item(40,40)
   p.camera=create_camera(p,512,256)
   x=160 d=1
-end 
+end
 
 function _update60()
   if btn(0) then p.y=p.y-1 end
@@ -81,7 +99,7 @@ function _update60()
   if btn(2) then p.x=p.x-1 end
   if btn(3) then p.x=p.x+1 end
   p.camera:update()
-  
+
   if x > 280 then d=-1 end
   if x < 64` then d=1 end
   x=x+d
@@ -101,24 +119,22 @@ function _draw()
 
  print("camera.x: "..p.camera.x, 0, 7)
  print("y: "..p.camera.y, 100, 7)
-
-
  print("cell.x: "..p.camera.cell.x,0,14)
  print("y: "..p.camera.cell.y,100,14)
-
  print("offset.x: "..p.camera.offset.x,0,21)
  print("y: "..p.camera.offset.y,100,21)
-
 
  print("min.x: "..p.camera.min.x,0,30)
  print("y: "..p.camera.min.y,100,30)
  print("max.x: "..p.camera.max.x,0,37)
  print("y: "..p.camera.max.y,100,37)
 
- print("min_x: "..p.camera.min_x,0,50)
- print("max_x: "..p.camera.max_x,0,57)
- print("min_y: "..p.camera.min_y,0,64)
- print("max_y: "..p.camera.max_y,0,71)
+ if type(p.camera.min_x)~=nil then
+  print("min_x: "..p.camera.min_x,0,50)
+  print("max_x: "..p.camera.max_x,0,57)
+  print("min_y: "..p.camera.min_y,0,64)
+  print("max_y: "..p.camera.max_y,0,71)
+ end
 
  --mset(flr(p.x/8), flr(p.y/8), 4)
 
