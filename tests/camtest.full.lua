@@ -133,13 +133,12 @@ function _draw()
  print("max.x: "..p.camera.max.x,0,37)
  print("y: "..p.camera.max.y,100,37)
 
- if type(p.camera.min_x)~=nil then
+ if type(p.camera.min_x)~="nil" then
   print("min_x: "..p.camera.min_x,0,50)
   print("max_x: "..p.camera.max_x,0,57)
   print("min_y: "..p.camera.min_y,0,64)
   print("max_y: "..p.camera.max_y,0,71)
  end
- 
  --mset(flr(p.x/8), flr(p.y/8), 4)
 
 end
