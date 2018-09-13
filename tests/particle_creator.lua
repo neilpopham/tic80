@@ -10,11 +10,7 @@ abs=math.abs
 min=math.min
 max=math.max
 flr=math.floor
-pi=math.pi
 function rnd(a) a=a or 1 return math.random()*a end
---function cos(a) return math.cos(2*pi*a) end
---function sin(a) return -math.sin(2*pi*a) end
---function atan2(a,b) b=b or 1 return math.atan(a,b)/(2*pi) end
 function cos(x) return math.cos((x or 0)*(math.pi*2)) end
 function sin(x) return math.sin(-(x or 0)*(math.pi*2)) end
 function atan2(x,y) return (0.75 + math.atan2(x,y) / (math.pi * 2)) % 1.0 end
@@ -239,6 +235,21 @@ end
 -- affectors
 particle_affectors={}
 
+particle_affectors.decay=function(self,params)
+ local a=params or {}
+ a.decay=a.decay or 0.6
+ a.update=function(self,ps)
+  for _,p in pairs(ps.particles) do
+   local dx=cos(p.angle)*p.force
+   local dy=-sin(p.angle)*p.force
+   if round(dx)==0 and round(dy)==0 then
+    p.lifespan=flr(p.lifespan*self.decay)
+   end
+  end
+ end
+ return a
+end   
+
 particle_affectors.force=function(self,params)
  local a=params or {}
  a.update=function(self,ps)
@@ -252,7 +263,6 @@ particle_affectors.force=function(self,params)
  end
  return a
 end
-
 
 particle_affectors.randomise=function(self,params)
  local a=params or {}
@@ -268,7 +278,6 @@ end
 particle_affectors.bounce=function(self,params)
  local a=params or {}
  a.force=a.force or 0.8
- a.halflife=a.halflife or 0.6
  a.update=function(self,ps)
   for _,p in pairs(ps.particles) do
    local h=false
@@ -294,11 +303,6 @@ particle_affectors.bounce=function(self,params)
    if v then
     p.force=p.force*self.force
     p.angle=(1-p.angle) % 1
-   end
-   local dx=cos(p.angle)*p.force
-   local dy=-sin(p.angle)*p.force
-   if round(dx)==0 and round(dy)==0 then
-    p.lifespan=flr(p.lifespan*self.halflife)
    end
   end
  end
@@ -484,6 +488,7 @@ function create_spark_2(x,y,count)
  add(s.emitters,particle_emitters:stationary({x=x,y=y,force={min=4,max=10},angle={min=240,max=300}}))
  add(s.affectors,particle_affectors:gravity({force=0.3}))
  add(s.affectors,particle_affectors:bounce({force=0.6}))
+ add(s.affectors,particle_affectors:decay())
  for i=1,count do
   s:add_particle(particle_types:spark({x=x,y=y,col={min=1,max=15},lifespan={min=160,max=480}}))
  end
@@ -509,9 +514,10 @@ function create_sprite_exploder(sprite,x,y,count)
  add(s.affectors,particle_affectors:gravity({force=0.25}))
  add(s.affectors,particle_affectors:bounce({force=0.5}))
  add(s.affectors,particle_affectors:heat())
+ add(s.affectors,particle_affectors:decay({decay=0.9})) 
  local cols=get_colour_array(sprite,count)
  for i=1,count do
-  s:add_particle(particle_types:spark({x=x,y=y,col=cols[i],lifespan={min=160,max=480}}))
+  s:add_particle(particle_types:spark({x=x,y=y,col=cols[i],lifespan={min=160,max=300}}))
  end
  s:emit()
  return s
@@ -535,7 +541,7 @@ function _update60()
   p=create_line(40+rnd(160),40+rnd(48),flr(rnd(50)+50))
  end
  if btnp(2) then
-  p=create_spark_2(40+rnd(160),40+rnd(48),flr(rnd(150)+250))
+  p=create_spark_2(40+rnd(160),40+rnd(48),flr(rnd(250)+450))
  end
  if btnp(3) then
   p=create_sprite_exploder(1,40+rnd(48),40+rnd(48),flr(rnd(150)+150))
@@ -555,10 +561,10 @@ function TIC() _update60() end
 _init()
 
 -- <TILES>
--- 001:1111111111111111111111111111111111111111111111111111111111111111
+-- 001:88888888888888888888888888bbbb88aabbbbaaaaaaaaaaaaaaaaaaaaaaaaaa
 -- </TILES>
 
 -- <PALETTE>
--- 000:140c1c44243430346d4e4a4e854c30346524d04648757161597dced27d2c8595a16daa2cd2aa996dc2cadad45edeeed6
+-- 000:0000001d2b537e2553008751ab52365f574fc2c3c7fff1e8ff004dffa300ffec2700e43629adff83769cff77abffccaa
 -- </PALETTE>
 
