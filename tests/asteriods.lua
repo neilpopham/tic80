@@ -96,8 +96,8 @@ function _draw()
     line(
      star.x,
      star.y,
-     star.x+p.dx*p.force/4*star.depth,
-     star.y+p.dy*p.force/4*star.depth,
+     star.x+p.dx*p.force/3*star.depth,
+     star.y+p.dy*p.force/3*star.depth,
      star.col2
     )
    end
