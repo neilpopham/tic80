@@ -91,16 +91,16 @@ function _draw()
  cls()
  -- if we're going fast draw a trail
  if abs(p.force)>3 then
-  for _,star in pairs(stars) do
-   if star.depth>0.5 then
+  local i=1
+  while stars[i].depth>0.5
     line(
-     star.x,
-     star.y,
-     star.x+p.dx*abs(p.force)/3*star.depth,
-     star.y+p.dy*abs(p.force)/3*star.depth,
-     star.col2
-    )
-   end
+    star.x,
+    star.y,
+    star.x+p.dx*abs(p.force)/3*star.depth,
+    star.y+p.dy*abs(p.force)/3*star.depth,
+    star.col2
+   )
+   i=i+1
   end
  end
  -- draw the stars
