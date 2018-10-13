@@ -68,12 +68,16 @@ pathfinder={
    return false
   else
    if current.x==self.finish.x and current.y==self.finish.y then
+    local t={}
     local cell=current
     while cell.parent do
-     add(self.path,vec2:create(cell.x,cell.y))
+     add(t,vec2:create(cell.x,cell.y))
      cell=cell.parent
     end
-    --add(self.path,vec2:create(cell.x,cell.y))
+    --add(t,vec2:create(cell.x,cell.y))
+    for i=#t,1,-1 do
+     add(self.path,t[i])
+    end    
     return true
    end
    add(self.closed,current)
