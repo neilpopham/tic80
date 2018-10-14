@@ -92,13 +92,13 @@ function _draw()
  -- if we're going fast draw a trail
  if abs(p.force)>3 then
   local i=1
-  while stars[i].depth>0.5
+  while stars[i].depth>0.5 do
     line(
-    star.x,
-    star.y,
-    star.x+p.dx*abs(p.force)/3*star.depth,
-    star.y+p.dy*abs(p.force)/3*star.depth,
-    star.col2
+    stars[i].x,
+    stars[i].y,
+    stars[i].x+p.dx*abs(p.force)/3*stars[i].depth,
+    stars[i].y+p.dy*abs(p.force)/3*stars[i].depth,
+    stars[i].col2
    )
    i=i+1
   end
@@ -132,3 +132,4 @@ _init()
 -- <PALETTE>
 -- 000:0000001d2b537e2553008751ab52365f574fc2c3c7fff1e8ff004dffa300ffec2700e43629adff83769cff77abffccaa
 -- </PALETTE>
+
