@@ -7,7 +7,6 @@
 
 add=table.insert
 sqrt=math.sqrt
-function mget(x,y) return 0 end
 function fget(x,y) return false end
 function del(t,a)
  for i,v in ipairs(t) do
@@ -153,15 +152,15 @@ function _init()
 end
 
 function _update60()
- if btnp(0) then f.x=f.x-1 end
- if btnp(1) then f.x=f.x+1 end
- if btnp(2) then f.y=f.y-1 end
- if btnp(3) then f.y=f.y+1 end
+ if btnp(2) then f.x=f.x-1 end
+ if btnp(3) then f.x=f.x+1 end
+ if btnp(0) then f.y=f.y-1 end
+ if btnp(1) then f.y=f.y+1 end
 end
 
 function _draw()
  cls()
- map(0,0)
+ map()
  spr(3,s.x*8,s.y*8)
  spr(3,f.x*8,f.y*8)
  local t=time()
@@ -178,7 +177,7 @@ function TIC() _update60() _draw() end
 _init()
 
 -- <TILES>
--- 001:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+-- 001:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 -- 002:7777777777777777777777777777777777777777777777777777777777777777
 -- 003:6666666666666666666666666666666666666666666666666666666666666666
 -- </TILES>
@@ -203,3 +202,4 @@ _init()
 -- <PALETTE>
 -- 000:140c1c44243430346d4e4a4e854c30346524d04648757161597dced27d2c8595a16daa2cd2aa996dc2cadad45edeeed6
 -- </PALETTE>
+
