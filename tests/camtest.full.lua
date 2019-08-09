@@ -21,6 +21,7 @@ function create_camera(item,x,y)
   offset={}
  }
  c.map=function(self)
+  camera(self.x,self.y)
   self.cell.x=flr(self.x/8)
   self.cell.y=flr(self.y/8)
   self.offset.x=-(self.x%8)
@@ -73,10 +74,25 @@ function create_camera(item,x,y)
   self.x=math.min(math.max(0,self.x),self.max.x)
   self.y=math.min(math.max(0,self.y),self.max.y)
  end
- c.spr=function(self,sprite,x,y)
-  spr(sprite,x-self.x,y-self.y,0)
- end
  return c
+end
+
+camera_x,camera_y=0,0
+camera=function(x,y)
+ x=x or 0
+ y=y or 0
+ camera_x,camera_y=x,y
+end
+
+tic80spr=spr
+function spr(sprite,x,y)
+ tic80spr(sprite,x-camera_x,y-camera_y,0)
+end
+function pset(x,y,col)
+ rectb(x-camera_x,y-camera_y,1,1,col)
+end
+function circfill(x,y,r,col)
+ circb(x-camera_x,y-camera_y,r,col)
 end
 
 function create_item(x,y)
@@ -110,9 +126,16 @@ end
 function _draw()
  cls()
  p.camera:map()
- p.camera:spr(1,p.x,p.y)
 
- p.camera:spr(4,x,160)
+ spr(1,p.x,p.y)
+
+ spr(4,x,160)
+
+ --camera(0,0)
+ spr(3,64,64)
+
+ camera(0,0)
+ spr(5,200,100)
 
  print("player.x: "..p.x, 0, 0)
  print("y: "..p.y, 100, 0)
@@ -151,6 +174,7 @@ _init()
 -- 002:3333333333333333333333333333333333333333333333333333333333333333
 -- 003:5555555555555555555555555555555555555555555555555555555555555555
 -- 004:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+-- 005:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 -- </TILES>
 
 -- <MAP>
@@ -201,3 +225,4 @@ _init()
 -- <PALETTE>
 -- 000:140c1c44243430346d4e4a4e854c30346524d04648757161597dced27d2c8595a16daa2cd2aa996dc2cadad45edeeed6
 -- </PALETTE>
+
