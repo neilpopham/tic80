@@ -384,7 +384,7 @@ function spr(sprite,x,y)
  tic80spr(sprite,x-camera_x,y-camera_y,0)
 end
 function pset(x,y,col)
- rect(x-camera_x,y-camera_y,1,1,col)
+ pix(x-camera_x,y-camera_y,col)
 end
 function circfill(x,y,r,col)
  circ(x-camera_x,y-camera_y,r,col)
@@ -1643,7 +1643,7 @@ stage_intro={
   end
  end,
  draw=function(self)
-  oprint("press \142 or \151 to start",18,60,6)
+  print("press z or x to start",60,60,6)
  end
 }
 
@@ -1779,9 +1779,9 @@ stage_over={
     end
    else
     stage_main:draw_hud()
-    print("game over",46,48,9)
-    print("press \142 to restart",28,60,13)
-    print("or \151 to return to the menu",12,68,13)
+    print("game over",94,48,9)
+    print("press z to restart",68,60,13)
+    print("or x to return to the menu",44,70,13)
     if f<12 then
      for y=8,127,8 do
       for x=0,127,8 do

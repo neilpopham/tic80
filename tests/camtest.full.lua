@@ -89,7 +89,7 @@ function spr(sprite,x,y)
  tic80spr(sprite,x-camera_x,y-camera_y,0)
 end
 function pset(x,y,col)
- rectb(x-camera_x,y-camera_y,1,1,col)
+ pix(x-camera_x,y-camera_y,col)
 end
 function circfill(x,y,r,col)
  circb(x-camera_x,y-camera_y,r,col)

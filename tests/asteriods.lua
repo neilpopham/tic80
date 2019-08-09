@@ -1,6 +1,6 @@
 -- title:  asteriods
 -- author: Neil Popham
--- desc:   
+-- desc:
 -- script: lua
 -- input:  gamepad
 
@@ -19,7 +19,7 @@ function cos(x) return math.cos((x or 0)*(math.pi*2)) end
 function sin(x) return math.sin(-(x or 0)*(math.pi*2)) end
 function atan2(x,y) return (0.75 + math.atan2(x,y) / (math.pi * 2)) % 1.0 end
 function mid(a,b,c) t={a,b,c} table.sort(t) return t[2] end
-function pset(x,y,c) rectb(x,y,1,1,c) end
+function pset(x,y,c) pix(x,y,c) end
 
 stars={}
 p={}

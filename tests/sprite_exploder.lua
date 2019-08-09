@@ -23,7 +23,7 @@ function rnd(a) a=a or 1 return math.random()*a end
 function cos(x) return math.cos((x or 0)*(math.pi*2)) end
 function sin(x) return math.sin(-(x or 0)*(math.pi*2)) end
 function atan2(x,y) return (0.75 + math.atan2(x,y) / (math.pi * 2)) % 1.0 end
-function pset(x,y,c) rectb(x,y,1,1,c) end
+function pset(x,y,c) pix(x,y,c) end
 function sget(x,y)
  x,y=flr(x),flr(y)
  local addr=0x8000+64*(flr(x/8)+flr(y/8)*16)
@@ -56,7 +56,7 @@ function fset(s,i,b)
     else
       e=fget(s,i)
     end
-    if (e and not b) or (not e and b) then 
+    if (e and not b) or (not e and b) then
       sprf[s+1]=sprf[s+1]+(b and 2^i or -2^i)
     end
   end
@@ -240,7 +240,7 @@ particle_affectors.decay=function(self,params)
   end
  end
  return a
-end   
+end
 particle_affectors.bounce=function(self,params)
  local a=params or {}
  a.force=a.force or 0.8
