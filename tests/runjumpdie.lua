@@ -343,8 +343,8 @@ cam={
    self.x=self.max
   end
   if self.force>0 then
-   self.sx=1-rnd(2)
-   self.sy=1-rnd(2)
+   self.sx=2-rnd(4)
+   self.sy=2-rnd(4)
    self.sx = self.sx * (self.force)
    self.sy = self.sy * (self.force)
    self.force = self.force * 0.9
@@ -357,8 +357,8 @@ cam={
   return self.x-self.min
  end,
  map=function(self)
-  local x=self:position()+self.sx
-  local y=self.sy
+  local x=flr(self:position()+self.sx)
+  local y=flr(self.sy)
   camera(x,y)
   self.cell.x=flr(x/8)
   self.cell.y=flr(y/8)
