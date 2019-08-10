@@ -28,10 +28,9 @@ end
 function del(t,a)
  for i,v in ipairs(t) do
   if v==a then
-   local r=v
    t[i]=t[#t]
    t[#t]=nil
-   return r
+   return v
   end
  end
 end
@@ -114,7 +113,6 @@ function extend(...)
  local arg={...}
  local o=del(arg,arg[1])
  for _,a in pairs(arg) do
- --for a in all(arg) do
   for k,v in pairs(a) do
    o[k]=v
   end
