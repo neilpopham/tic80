@@ -8,6 +8,6 @@ stage_intro={
   end
  end,
  draw=function(self)
-  print("press \142 or \151 to start",18,60,6)
+  print("press z or x to start",60,60,6)
  end
 }

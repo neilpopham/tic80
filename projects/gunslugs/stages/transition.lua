@@ -135,7 +135,7 @@ squares_out={
 } setmetatable(squares_out,{__index=squares_in})
 
 function minskycircfill(y,x,r)
- local size=4
+ local size=8
  local r1=8/size
  local x=flr(x/size)
  local y=flr(y/size)
@@ -187,8 +187,8 @@ function minskycircfill(y,x,r)
   rectfill(0,my.max*size+size,screen.x2,screen.y2,0)
  end
  for y,d in pairs(data) do
-  if d.x1>0 then rectfill(0,y*size,(d.x1*size)-1,y*size+size-1,2) end
-  if d.x2<cells.x2 then rectfill(d.x2*size+size,y*size,screen.x2,y*size+size-1,2) end
+  if d.x1>0 then rectfill(0,y*size,(d.x1*size)-1,y*size+size-1,0) end
+  if d.x2<cells.x2 then rectfill(d.x2*size+size,y*size,screen.x2,y*size+size-1,0) end
  end
 end
 
@@ -202,7 +202,7 @@ minsky_in={
  end,
  draw=function(self)
   minskycircfill(self.x,self.y,self:radius())
-  if self.t>64 then self.complete=true end
+  if self.t>40 then self.complete=true end
   self.t=self.t+1
   return self.complete
  end
@@ -213,6 +213,6 @@ minsky_out={
   return squares_in.create(self,x,y)
  end,
  radius=function(self)
-  return 64-self.t
+  return 40-self.t
  end
 } setmetatable(minsky_out,{__index=minsky_in})

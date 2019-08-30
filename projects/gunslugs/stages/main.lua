@@ -14,7 +14,7 @@ stage_main={
   p:reset(full)
   fillmap(level)
   self.draw=self.draw_intro
-  self.transition=minsky_out:create(p.camera:screenx(),p.y)
+  self.transition=minsky_in:create(p.camera:screenx(),p.y)
   self.t=0
  end,
  complete=function(self)
