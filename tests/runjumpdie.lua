@@ -28,10 +28,9 @@ end
 function del(t,a)
  for i,v in ipairs(t) do
   if v==a then
-   local r=v
    t[i]=t[#t]
    t[#t]=nil
-   return r
+   return v
   end
  end
 end
@@ -114,7 +113,6 @@ function extend(...)
  local arg={...}
  local o=del(arg,arg[1])
  for _,a in pairs(arg) do
- --for a in all(arg) do
   for k,v in pairs(a) do
    o[k]=v
   end
@@ -256,7 +254,7 @@ shells={
      {
       x=x,
       y=y,
-      life={30,60},
+      life={30,50},
       force={1,2},
       g=0.2,
       b=0.7,
@@ -282,7 +280,7 @@ smoke={
       delay=0,
       col=7,
       life={10,20},
-      force={0.2,1},
+      force={0.3,1.2},
       angle={0,1},
       size={4,6},
       shrink=0.8
@@ -314,7 +312,7 @@ cam={
    target=item,
    x=item.x,
    y=0,
-   buffer=12,
+   buffer=20,
    min=96,
    force=0,
    sx=0,
@@ -714,15 +712,14 @@ destructable={
  destroy=function(self,health)
   self.complete=true
   self.visible=false
-  local size={self.type.size[1]*(health/200),self.type.size[2]*(health/200)}
   doublesmoke(
    (flr(self.x/8)*8)+4,
    (flr(self.y/8)*8)+4,
    {10,5,5},
    {
-    {col=self.type.col,size=size},
-    {col=7,size=size},
-    {col=self.type.col,life={20,30}}
+    {col=self.type.col,size=self.type.size},
+    {col=7,size=self.type.size},
+    {col=self.type.col,life={20,50}}
    }
   )
   if self.type.range then
@@ -1887,4 +1884,3 @@ _init()
 -- <PALETTE>
 -- 000:0000001d2b537e2553008751ab52365f574fc2c3c7fff1e8ff004dffa300ffec2700e43629adff83769cff77abffccaa
 -- </PALETTE>
-
