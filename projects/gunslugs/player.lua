@@ -103,7 +103,7 @@ p.update=function(self)
   if btn(pad.left) then
    self.anim.current.dir=dir.left
    check(self,stage,face)
-   self.dx=sself.dx-elf.ax
+   self.dx=self.dx-self.ax
   elseif btn(pad.right) then
    self.anim.current.dir=dir.right
    check(self,stage,face)

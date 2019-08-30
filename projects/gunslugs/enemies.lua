@@ -167,7 +167,6 @@ enemy={
   if self.p>0 then
    self.p=max(0,self.p-1)
   elseif self:collide_object(p) then
-   printh(p.f)
    if p.f>10 then
     self:damage(p.f*5)
    else
