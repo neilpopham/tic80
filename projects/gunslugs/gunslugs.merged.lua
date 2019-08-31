@@ -10,6 +10,8 @@ screen={width=240,height=136,x2=239,y2=135}
 dir={left=1,right=2}
 drag={air=0.95,ground=0.65,gravity=0.7}
 
+-- carts/projects/gunslugs/pico8
+
 add=table.insert
 sqrt=math.sqrt
 abs=math.abs
@@ -101,6 +103,7 @@ end
 
 --function sfx() end
 
+-- carts/projects/gunslugs/functions
 
 function mrnd(x,f)
  if f==nil then f=true end
@@ -167,6 +170,7 @@ function lpad(x,n)
  return sub("0000000"..x,-n)
 end
 
+-- carts/projects/gunslugs/particles
 
 particle={
  create=function(self,params)
@@ -307,6 +311,7 @@ function doublesmoke(x,y,count,params)
  shells:create(x,y,count[3],params[3])
 end
 
+-- carts/projects/gunslugs/camera
 
 camera_x,camera_y=0,0
 camera=function(x,y)
@@ -401,6 +406,7 @@ function rectfill(x1,y1,x2,y2,col)
  rect(x1-camera_x,y1-camera_y,x2-x1+1,y2-y1+1,col)
 end
 
+-- carts/projects/gunslugs/objects
 
 counter={
  create=function(self,min,max)
@@ -667,6 +673,7 @@ animatable={
  end
 } setmetatable(animatable,{__index=movable})
 
+-- carts/projects/gunslugs/button
 
 button={
  create=function(self,index)
@@ -708,6 +715,7 @@ button={
  end
 } setmetatable(button,{__index=counter})
 
+-- carts/projects/gunslugs/destructables
 
 destructable_types={
  nil,
@@ -787,6 +795,7 @@ destructable={
  end
 } setmetatable(destructable,{__index=movable})
 
+-- carts/projects/gunslugs/weapons
 
 weapon_types={
  -- pistol
@@ -812,6 +821,7 @@ weapon_types={
  }
 }
 
+-- carts/projects/gunslugs/enemies
 
 enemy_shoot_dumb=function(self)
  local face=self.anim.current.dir
@@ -1007,6 +1017,7 @@ enemy={
  end
 } setmetatable(enemy,{__index=animatable})
 
+-- carts/projects/gunslugs/player
 
 p=animatable:create(8,112,0.15,-2,2,3)
 local add_stage=function(...) p.anim:add_stage(...) end
@@ -1266,6 +1277,7 @@ p.update=function(self)
 
 end
 
+-- carts/projects/gunslugs/bullets
 
 bullet_collection={
  create=function(self)
@@ -1456,6 +1468,7 @@ bullet={
  end
 } setmetatable(bullet,{__index=movable})
 
+-- carts/projects/gunslugs/pickups
 
 pickup={
  destroy=function(self)
@@ -1489,6 +1502,7 @@ medikit={
  end
 } setmetatable(medikit,{__index=pickup})
 
+-- carts/projects/gunslugs/levels
 
 function fillmap(level)
  local data,levels,floors,pool,m,f={},{15,11,7},120
@@ -1645,6 +1659,7 @@ function fillmap(level)
  end
 end
 
+-- carts/projects/gunslugs/stages/transition
 
 transition={
  create=function(self,x,y)
@@ -1865,6 +1880,7 @@ minsky_out={
  end
 } setmetatable(minsky_out,{__index=minsky_in})
 
+-- carts/projects/gunslugs/stages/intro
 
 stage_intro={
  init=function(self)
@@ -1880,6 +1896,7 @@ stage_intro={
  end
 }
 
+-- carts/projects/gunslugs/stages/main
 
 stage_main={
  t=0,
@@ -1958,6 +1975,7 @@ stage_main={
  end
 }
 
+-- carts/projects/gunslugs/stages/over
 
 stage_over={
  t=0,
@@ -2011,7 +2029,6 @@ stage_over={
   end
  end
 }
-
 
 
 function _init()

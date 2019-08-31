@@ -10,7 +10,8 @@ $strMain = file_get_contents($argv[1]);
 if (preg_match_all('/^require "(.+?)"$/m', $strMain, $arrMatches)) {
 	foreach ($arrMatches[1] as $i => $strFile) {
 		$strRequire = file_get_contents("{$strRoot}\\{$strFile}.lua");
-		$strRequire = trim($strRequire) . "\n\n"; 
+		$strRequire = trim($strRequire) . "\n"; 
+		$strRequire = "-- {$strFile}.lua\n\n" . $strRequire; 
 		$strMain = str_replace(
 			$arrMatches[0][$i],
 			$strRequire,
