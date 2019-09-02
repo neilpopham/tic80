@@ -10,7 +10,7 @@ screen={width=240,height=136,x2=239,y2=135}
 dir={left=1,right=2}
 drag={air=0.95,ground=0.65,gravity=0.7}
 
--- carts/projects/gunslugs/pico8
+-- carts/projects/gunslugs/pico8.lua
 
 add=table.insert
 sqrt=math.sqrt
@@ -101,9 +101,14 @@ function fset(s,i,b)
   end
 end
 
---function sfx() end
+sfxn=1
+tic80sfx=sfx
+function sfx(n)
+ tic80sfx(n,nil,32,sfxn)
+ if sfxn==3 then sfxn=1 else sfxn=sfxn+1 end
+end
 
--- carts/projects/gunslugs/functions
+-- carts/projects/gunslugs/functions.lua
 
 function mrnd(x,f)
  if f==nil then f=true end
@@ -170,7 +175,7 @@ function lpad(x,n)
  return sub("0000000"..x,-n)
 end
 
--- carts/projects/gunslugs/particles
+-- carts/projects/gunslugs/particles.lua
 
 particle={
  create=function(self,params)
@@ -311,7 +316,7 @@ function doublesmoke(x,y,count,params)
  shells:create(x,y,count[3],params[3])
 end
 
--- carts/projects/gunslugs/camera
+-- carts/projects/gunslugs/camera.lua
 
 camera_x,camera_y=0,0
 camera=function(x,y)
@@ -406,7 +411,7 @@ function rectfill(x1,y1,x2,y2,col)
  rect(x1-camera_x,y1-camera_y,x2-x1+1,y2-y1+1,col)
 end
 
--- carts/projects/gunslugs/objects
+-- carts/projects/gunslugs/objects.lua
 
 counter={
  create=function(self,min,max)
@@ -673,7 +678,7 @@ animatable={
  end
 } setmetatable(animatable,{__index=movable})
 
--- carts/projects/gunslugs/button
+-- carts/projects/gunslugs/button.lua
 
 button={
  create=function(self,index)
@@ -715,7 +720,7 @@ button={
  end
 } setmetatable(button,{__index=counter})
 
--- carts/projects/gunslugs/destructables
+-- carts/projects/gunslugs/destructables.lua
 
 destructable_types={
  nil,
@@ -795,7 +800,7 @@ destructable={
  end
 } setmetatable(destructable,{__index=movable})
 
--- carts/projects/gunslugs/weapons
+-- carts/projects/gunslugs/weapons.lua
 
 weapon_types={
  -- pistol
@@ -821,7 +826,7 @@ weapon_types={
  }
 }
 
--- carts/projects/gunslugs/enemies
+-- carts/projects/gunslugs/enemies.lua
 
 enemy_shoot_dumb=function(self)
  local face=self.anim.current.dir
@@ -1017,7 +1022,7 @@ enemy={
  end
 } setmetatable(enemy,{__index=animatable})
 
--- carts/projects/gunslugs/player
+-- carts/projects/gunslugs/player.lua
 
 p=animatable:create(8,112,0.15,-2,2,3)
 local add_stage=function(...) p.anim:add_stage(...) end
@@ -1277,7 +1282,7 @@ p.update=function(self)
 
 end
 
--- carts/projects/gunslugs/bullets
+-- carts/projects/gunslugs/bullets.lua
 
 bullet_collection={
  create=function(self)
@@ -1468,7 +1473,7 @@ bullet={
  end
 } setmetatable(bullet,{__index=movable})
 
--- carts/projects/gunslugs/pickups
+-- carts/projects/gunslugs/pickups.lua
 
 pickup={
  destroy=function(self)
@@ -1502,7 +1507,7 @@ medikit={
  end
 } setmetatable(medikit,{__index=pickup})
 
--- carts/projects/gunslugs/levels
+-- carts/projects/gunslugs/levels.lua
 
 function fillmap(level)
  local data,levels,floors,pool,m,f={},{15,11,7},120
@@ -1659,7 +1664,7 @@ function fillmap(level)
  end
 end
 
--- carts/projects/gunslugs/stages/transition
+-- carts/projects/gunslugs/stages/transition.lua
 
 transition={
  create=function(self,x,y)
@@ -1880,7 +1885,7 @@ minsky_out={
  end
 } setmetatable(minsky_out,{__index=minsky_in})
 
--- carts/projects/gunslugs/stages/intro
+-- carts/projects/gunslugs/stages/intro.lua
 
 stage_intro={
  init=function(self)
@@ -1896,7 +1901,7 @@ stage_intro={
  end
 }
 
--- carts/projects/gunslugs/stages/main
+-- carts/projects/gunslugs/stages/main.lua
 
 stage_main={
  t=0,
@@ -1975,7 +1980,7 @@ stage_main={
  end
 }
 
--- carts/projects/gunslugs/stages/over
+-- carts/projects/gunslugs/stages/over.lua
 
 stage_over={
  t=0,
