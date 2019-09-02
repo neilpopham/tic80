@@ -87,4 +87,9 @@ function fset(s,i,b)
   end
 end
 
---function sfx() end
+sfxn=1
+tic80sfx=sfx
+function sfx(n)
+ tic80sfx(n,nil,32,sfxn)
+ if sfxn==3 then sfxn=1 else sfxn=sfxn+1 end
+end
