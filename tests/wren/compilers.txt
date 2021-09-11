@@ -1,0 +1,5 @@
+Admin CMD: choco install nodejs
+npm i -g scriptpacker
+scriptpacker build [input]
+
+npm i tic-bundle --save-dev
