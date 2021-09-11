@@ -20,8 +20,9 @@ class Game is TIC {
 		if (T.btn(3)) _x = _x + 1
 
 		T.cls(13)
-		T.spr(1 + _t%60/30*2,_x,_y,14,3,0,0,2,2)
-		T.print("HELLO WORLD!",84,84)
+		var sp = 1 + (_t/30).floor % 2 * 2
+		T.spr(sp, _x, _y, 14, 3, 0, 0, 2, 2)
+		T.print("Hello world!", 84, 84)
 		_t = _t + 1
 	}
 }
