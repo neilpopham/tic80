@@ -1,0 +1,22 @@
+{
+   "root":"src",
+   "wait":200,
+   "metadata":{
+      "title":"foo",
+      "author":"neilpopham@gmail.com",
+      "desc":"foo",
+      "script":"wren",
+      "input":null,
+      "saveid":null
+   },
+   "output":{
+      "path":"./",
+      "extension":"wren",
+      "name":"build"
+   },
+   "files":[
+      "bundle.wren",
+      "player.wren"
+   ],
+   "after":null
+}
