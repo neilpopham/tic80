@@ -5,8 +5,10 @@
 // script: wren
 // C:\Users\Neil\AppData\Roaming\com.nesbox.tic\TIC-80\tests\wren\player.wren
 class Player {
-	_x = 0
-	_y = 0
+	construct new() {
+		_x = 0
+		_y = 0		
+	}
 }
 // C:\Users\Neil\AppData\Roaming\com.nesbox.tic\TIC-80\tests\wren\includes.wren
 // import "./header"
