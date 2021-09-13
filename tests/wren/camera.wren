@@ -12,39 +12,29 @@ class Screen {
 	static y2 { 135 }
 }
 
+class Player {
+	x { _x }
+	y { _y }
+
+	construct new(x, y) {
+		_x = x
+		_y = y
+	}
+}
+
 class Camera {
 	x { _x }
 	y { _y }
-	sx { _sx }
-	sy { _sy }
 
-	construct new() {
-		_x = 0
-		_y = 0
-		_sx = 0
-		_sy = 0
-
-		_buffer = {"x": 32, "y": 16 }
+	construct new(target) {
+		_x = target.x
+		_y = target.y
+		_buffer = { "x": 32, "y": 16 }
 		_min = { "x": 8 * (Screen.width / 16).floor, "y": 8 * (Screen.height / 16).floor }
 		_max = { "x": x - Screen.width, "y": y - Screen.height, "shift": 2 }
 		_tiles = { "width": (Screen.width / 8).floor, "y": (Screen.height / 8).floor }
 		_cell = { "x": 0, "y": 0 }
 		_offset = { "x": 0, "y": 0 }
-
-/*
-  min={x=8*flr(screen.width/16),y=8*flr(screen.height/16)},
-  max={x=x-screen.width,y=y-screen.height,shift=2},
-  tiles={width=flr(screen.width/8),height=flr(screen.height/8)},
-  cell={},
-  offset={}
-*/
-	}
-
-	construct new(x, y) {
-		_x = x
-		_y = y
-		_sx = 0
-		_sy = 0
 	}
 
 	position(x, y) {
@@ -55,14 +45,16 @@ class Camera {
 
 class Game is TIC {
 	camera { _camera }
+	player { _player }
 
 	construct new() {
-		_camera = Camera.new()
+		_player = Player.new(4, 4)
+		_camera = Camera.new(_player)
 	}
 
 	TIC() {
 		T.cls(0)
-		T.map(camera.x, camera.y, Screen.width, Screen.height, camera.sx, camera.sy)
+		T.map(camera.x, camera.y, Screen.width, Screen.height, 4, 4)
 		T.print("hello",0,0,6)
 	}
 }
