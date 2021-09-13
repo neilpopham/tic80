@@ -12,13 +12,55 @@ class Screen {
 	static y2 { 135 }
 }
 
-class Player {
+class Input {
+	static up { T.btn(0) }
+	static down  T.btn(1) }
+	static left { T.btn(2) }
+	static right { T.btn(3) }
+}
+
+class Point {
 	x { _x }
 	y { _y }
+	x = (value) { _x = value }
+	y = (value) { _y = value }
 
 	construct new(x, y) {
 		_x = x
 		_y = y
+	}
+
+	construct new() {}	
+}
+
+class Player {
+	x { _x }
+	y { _y }
+
+	camera { _camera }
+	camera = (value) { _camera = value }
+
+	construct new(x, y) {
+		_x = x
+		_y = y
+		Camera.new(this, 512, 256)
+	}
+
+	update() {
+		if (Input.right) {
+			_x = _x + 1
+		}
+		if (Input.left) {
+			_x = _x - 1
+		}	
+		if (Input.down) {
+			_y = _y + 1
+		}
+		if (Input.up) {
+			_y = _y - 1
+		}		
+		camera.update()
+		T.spr(1, _x - camera.x, _y - camera.y)	
 	}
 }
 
@@ -26,20 +68,30 @@ class Camera {
 	x { _x }
 	y { _y }
 
-	construct new(target) {
+	construct new(target, width, height) {
+		_target = target
 		_x = target.x
 		_y = target.y
-		_buffer = { "x": 32, "y": 16 }
-		_min = { "x": 8 * (Screen.width / 16).floor, "y": 8 * (Screen.height / 16).floor }
-		_max = { "x": x - Screen.width, "y": y - Screen.height, "shift": 2 }
-		_tiles = { "width": (Screen.width / 8).floor, "y": (Screen.height / 8).floor }
-		_cell = { "x": 0, "y": 0 }
-		_offset = { "x": 0, "y": 0 }
+		_buffer = Point.new(32, 16)
+		_minimum = Point.new(8 * (Screen.width / 16).floor, 8 * (Screen.height / 16).floor)
+		_maximum = Point.new(width - Screen.width, height - Screen.height)
+		_tiles = Point.new((Screen.width / 8).floor, (Screen.height / 8).floor)
+		_cell = Point.new()
+		_offset = Point.new()
+
+		target.camera = this
 	}
 
-	position(x, y) {
-		_x = (x/8).floor()
-		_y = (y/8).floor()
+	update() {
+		_x = (_target.x - _minimum.x).clamp(0, _maximum.x)
+		_y = (_target.y - _minimum.y).clamp(0, _maximum.y)
+  		
+  		_cell.x = (_x / 8).floor
+  		_cell.y = (_y / 8).floor
+  		_offset.x = -(_x % 8)
+		_offset.y = -(_y % 8)
+		
+		T.map(_cell.x, _cell.y, _tiles.x + 1, _tiles.y + 1, _offset.x, _offset.y)
 	}
 }
 
@@ -49,12 +101,15 @@ class Game is TIC {
 
 	construct new() {
 		_player = Player.new(4, 4)
-		_camera = Camera.new(_player)
+		//_player.camera = Camera.new(_player, 512, 256)
+		//Camera.new(_player, 512, 256)
 	}
 
 	TIC() {
 		T.cls(0)
-		T.map(camera.x, camera.y, Screen.width, Screen.height, 4, 4)
+		//player.camera.update()
+		player.update()
+		
 		T.print("hello",0,0,6)
 	}
 }
