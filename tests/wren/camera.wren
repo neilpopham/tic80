@@ -14,7 +14,7 @@ class Screen {
 
 class Input {
 	static up { T.btn(0) }
-	static down  T.btn(1) }
+	static down { T.btn(1) }
 	static left { T.btn(2) }
 	static right { T.btn(3) }
 }
@@ -30,20 +30,16 @@ class Point {
 		_y = y
 	}
 
-	construct new() {}	
+	construct new() {}
 }
 
 class Player {
 	x { _x }
 	y { _y }
 
-	camera { _camera }
-	camera = (value) { _camera = value }
-
 	construct new(x, y) {
 		_x = x
 		_y = y
-		Camera.new(this, 512, 256)
 	}
 
 	update() {
@@ -52,15 +48,32 @@ class Player {
 		}
 		if (Input.left) {
 			_x = _x - 1
-		}	
+		}
 		if (Input.down) {
 			_y = _y + 1
 		}
 		if (Input.up) {
 			_y = _y - 1
-		}		
-		camera.update()
-		T.spr(1, _x - camera.x, _y - camera.y)	
+		}
+		T.spr(1, _x - GameState.camera.x, _y - GameState.camera.y)
+	}
+}
+
+class Enemy {
+	x { _x }
+	y { _y }
+
+	construct new(x, y) {
+		_x = x
+		_y = y
+		_dx = 1
+	}
+
+	update() {
+		_x = _x + _dx
+		if (_x > 280) _dx = -1
+		if (_x < 64) _dx = 1
+		T.spr(4, _x - GameState.camera.x, _y - GameState.camera.y)
 	}
 }
 
@@ -78,39 +91,47 @@ class Camera {
 		_tiles = Point.new((Screen.width / 8).floor, (Screen.height / 8).floor)
 		_cell = Point.new()
 		_offset = Point.new()
-
-		target.camera = this
 	}
 
 	update() {
 		_x = (_target.x - _minimum.x).clamp(0, _maximum.x)
 		_y = (_target.y - _minimum.y).clamp(0, _maximum.y)
-  		
+
   		_cell.x = (_x / 8).floor
   		_cell.y = (_y / 8).floor
   		_offset.x = -(_x % 8)
 		_offset.y = -(_y % 8)
-		
+
 		T.map(_cell.x, _cell.y, _tiles.x + 1, _tiles.y + 1, _offset.x, _offset.y)
 	}
+}
+
+class GameState {
+	static game { __game }
+	static game = (value) { __game = value }
+	static camera { __game.camera }
 }
 
 class Game is TIC {
 	camera { _camera }
 	player { _player }
+	enemy { _enemy }
 
 	construct new() {
 		_player = Player.new(4, 4)
-		//_player.camera = Camera.new(_player, 512, 256)
+		_enemy = Enemy.new(160, 160)
+		_camera = Camera.new(_player, 512, 256)
 		//Camera.new(_player, 512, 256)
+		GameState.game = this
 	}
 
 	TIC() {
 		T.cls(0)
-		//player.camera.update()
+		camera.update()
 		player.update()
-		
-		T.print("hello",0,0,6)
+		enemy.update()
+		//camera.update()
+		T.print(_enemy.x,0,0,6)
 	}
 }
 
