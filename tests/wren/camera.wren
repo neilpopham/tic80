@@ -86,24 +86,79 @@ class Camera {
 		_x = target.x
 		_y = target.y
 		_buffer = Point.new(32, 16)
-		_minimum = Point.new(8 * (Screen.width / 16).floor, 8 * (Screen.height / 16).floor)
-		_maximum = Point.new(width - Screen.width, height - Screen.height)
+		_min = Point.new(8 * (Screen.width / 16).floor, 8 * (Screen.height / 16).floor)
+		_max = Point.new(width - Screen.width, height - Screen.height)
 		_tiles = Point.new((Screen.width / 8).floor, (Screen.height / 8).floor)
 		_cell = Point.new()
 		_offset = Point.new()
 	}
 
-	update() {
-		_x = (_target.x - _minimum.x).clamp(0, _maximum.x)
-		_y = (_target.y - _minimum.y).clamp(0, _maximum.y)
+	update_old() {
+		_x = (_target.x - _min.x).clamp(0, _max.x)
+		_y = (_target.y - _min.y).clamp(0, _max.y)
 
-  		_cell.x = (_x / 8).floor
-  		_cell.y = (_y / 8).floor
-  		_offset.x = -(_x % 8)
+		_cell.x = (_x / 8).floor
+		_cell.y = (_y / 8).floor
+		_offset.x = -(_x % 8)
 		_offset.y = -(_y % 8)
 
 		T.map(_cell.x, _cell.y, _tiles.x + 1, _tiles.y + 1, _offset.x, _offset.y)
 	}
+
+	update() {
+		_shift = 2
+		_min_x =  _x + _min.x - _buffer.x
+		_max_x =  _x + _min.x + _buffer.x
+		_min_y =  _y + _min.y - _buffer.y
+		_max_y =  _y + _min.y + _buffer.y
+
+		if (_min_x > _target.x) {
+			_x = _x + (_target.x - _min_x).min(_shift)
+		} else {
+			if (_max_x < _target.x) {
+				_x = _x + (_target.x - _max_x).min(_shift)
+			}
+		}
+		if (_min_y > _target.y) {
+			_y = _y + (_target.y - _min_y).min(_shift)
+		} else {
+			if (_max_y < _target.y) {
+				_y = _y + (_target.y - _max_y).min(_shift)
+			}
+		}	
+		_x = _x.clamp(0, _max.x)
+		_y = _y.clamp(0, _max.y)		
+
+		_cell.x = (_x / 8).floor
+		_cell.y = (_y / 8).floor
+		_offset.x = -(_x % 8)
+		_offset.y = -(_y % 8)
+
+		T.map(_cell.x, _cell.y, _tiles.x + 1, _tiles.y + 1, _offset.x, _offset.y)		
+	}
+
+/*
+  self.min_x=self.x+self.min.x-self.buffer.x
+  self.max_x=self.x+self.min.x+self.buffer.x
+  self.min_y=self.y+self.min.y-self.buffer.y
+  self.max_y=self.y+self.min.y+self.buffer.y
+  if self.min_x>self.target.x then
+   self.x=self.x+min(self.target.x-self.min_x,self.max.shift)
+  elseif self.max_x<self.target.x then
+   self.x=self.x+min(self.target.x-self.max_x,self.max.shift)
+  end
+  if self.min_y>self.target.y then
+   self.y=self.y+min(self.target.y-self.min_y,self.max.shift)
+  elseif self.max_y<self.target.y then
+   self.y=self.y+min(self.target.y-self.max_y,self.max.shift)
+  end
+  --[[
+  self.x=mid(0,self.x,self.max.x)
+  self.y=mid(0,self.y,self.max.y)
+  ]]
+  self.x=math.min(math.max(0,self.x),self.max.x)
+  self.y=math.min(math.max(0,self.y),self.max.y)
+*/
 }
 
 class GameState {
