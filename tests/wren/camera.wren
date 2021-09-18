@@ -85,7 +85,7 @@ class Camera {
 		_target = target
 		_x = target.x
 		_y = target.y
-		_buffer = Point.new(32, 16)
+		_buffer = Point.new(64, 16)
 		_min = Point.new(8 * (Screen.width / 16).floor, 8 * (Screen.height / 16).floor)
 		_max = Point.new(width - Screen.width, height - Screen.height)
 		_tiles = Point.new((Screen.width / 8).floor, (Screen.height / 8).floor)
@@ -125,16 +125,16 @@ class Camera {
 			if (_max_y < _target.y) {
 				_y = _y + (_target.y - _max_y).min(_shift)
 			}
-		}	
+		}
 		_x = _x.clamp(0, _max.x)
-		_y = _y.clamp(0, _max.y)		
+		_y = _y.clamp(0, _max.y)
 
 		_cell.x = (_x / 8).floor
 		_cell.y = (_y / 8).floor
 		_offset.x = -(_x % 8)
 		_offset.y = -(_y % 8)
 
-		T.map(_cell.x, _cell.y, _tiles.x + 1, _tiles.y + 1, _offset.x, _offset.y)		
+		T.map(_cell.x, _cell.y, _tiles.x + 1, _tiles.y + 1, _offset.x, _offset.y)
 	}
 
 /*

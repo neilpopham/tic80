@@ -35,14 +35,18 @@ class Hitbox {
 	height { _height }
 
 	construct new() {
-		new(0, 0, 8, 8, 7, 7)
+		init(0, 0, 8, 8, 7, 7)
 	}
 
 	construct new(x, y, w, h) {
-		new(x, y, w, h, w - 1, h - 1)
+		init(x, y, w, h, w - 1, h - 1)
 	}
 
 	construct new(x, y, w, h, x2, y2) {
+		init(x, y, w, h, x2, y2)
+	}
+
+	init(x, y, w, h, x2, y2) {
 		_x = x
 		_y = y
 		_width = w
@@ -69,7 +73,7 @@ class Entity {
 		_x = x
 		_y = y
 		_hitbox = Hitbox.new()
-		_complete = false 
+		_complete = false
 		_health = 0
 	}
 
@@ -85,7 +89,7 @@ class Entity {
 	}
 
 	collide(object, x, y) {
-		if (complete || object.complete) return false 
+		if (complete || object.complete) return false
 		return (x + hitbox.x <= object.x + object.hitbox.x2) &&
 			(object.x + object.hitbox.x < x + hitbox.width) &&
 			(y + hitbox.y <= object.y + object.hitbox.y2) &&
@@ -116,9 +120,9 @@ class Counter {
 	onMax = (value) { _onMax = value }
 
 	construct new(min, max) {
-		_min = min 
+		_min = min
 		_max = max
-		_onMax = null 
+		_onMax = null
 		_tick = 0
 	}
 
@@ -149,7 +153,7 @@ class Button is Counter {
 	construct new(index) {
 		super(1, 12)
 		_index = index
-		_released = true 
+		_released = true
 		_disabled = false
 		_onRelease = null
 		_onLong = null
@@ -159,7 +163,7 @@ class Button is Counter {
 
 	check() {
 		if (T.btn(_index)) {
-			if (_disabled) return 
+			if (_disabled) return
 			if ((_tick == 0) && (false ==_released)) return
 			this.increment()
 			_released = false
@@ -199,7 +203,7 @@ class Button {
 	construct new(index) {
 		_index = index
 		_counter = Counter.new(1, 30)
-		_released = true 
+		_released = true
 		_disabled = false
 		_onRelease = null
 		_onLong = null
@@ -208,7 +212,7 @@ class Button {
 
 	check() {
 		if (T.btn(_index)) {
-			if (_disabled) return 
+			if (_disabled) return
 			if ((_counter.tick == 0) && (false ==_released)) return
 			_counter.increment()
 			_released = false
@@ -218,14 +222,12 @@ class Button {
 				if (_onRelease is Fn) {
 					_onRelease.call(t)
 				}
-				if (_counter.tick > 12) {
+				if (t > 20) {
 					if (_onLong is Fn) {
 						_onLong.call(t)
 					}
-				} else {
-					if (_onShort is Fn) {
-						_onShort.call(t)
-					}
+				} else  if (_onShort is Fn) {
+					_onShort.call(t)
 				}
 			}
 			_counter.reset()
@@ -235,7 +237,6 @@ class Button {
 
 	pressed {
 		check()
-		T.trace(_counter.valid)
 		return _counter.valid
 	}
 
@@ -260,7 +261,11 @@ class Game is TIC {
 		GameState.game = this
 
 		_button = Button.new(Pad.down)
-		_button.onRelease = Fn.new { T.print("released", 0, 50) }
+		_button.onRelease = Fn.new {|tick| T.print("released " + tick.toString, 0, 50) }
+		_button.onShort = Fn.new {|tick| T.print("short " + tick.toString, 0, 60) }
+		_button.onLong = Fn.new {|tick| T.print("long  " + tick.toString, 0, 60) }
+
+		_player = Entity.new(10, 10)
 	}
 
 	TIC() {
