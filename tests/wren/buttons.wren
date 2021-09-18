@@ -85,7 +85,9 @@ class Button {
 
 	cutoff { _cutoff }
 	tick { _counter.tick }
+	disabled { _disabled }
 
+	disabled = (value) { _disabled = value }
 	onRelease = (value) { _onRelease = value }
 	onLong = (value) { _onLong = value }
 	onShort = (value) { _onShort = value }
