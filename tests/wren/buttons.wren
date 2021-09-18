@@ -47,7 +47,15 @@ class Counter {
 
 	onMax = (value) { _onMax = value }
 
+	construct new(max) {
+		init(0, max)
+	}
+
 	construct new(min, max) {
+		init(min, max)
+	}
+
+	init(min, max) {
 		_min = min
 		_max = max
 		_onMax = null
@@ -152,7 +160,7 @@ class Game is TIC {
 				var button = _controllers[c].buttons[b]
 				button.onRelease = Fn.new { |tick|
 					 _state[index] = tick
-					 _counters[index] = Counter.new(0, 60)
+					 _counters[index] = Counter.new(60)
 					 _counters[index].onMax = Fn.new {
 					 	_counters[index] = null
 					 	_state[index] = 0

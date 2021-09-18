@@ -117,9 +117,17 @@ class Counter {
 	max { _max }
 	valid { (_tick >= _min) && (_tick <= _max) }
 
-	onMax = (value) { _onMax = value }
+	onMax = (value) { _onMax = value
+
+	construct new(max) {
+		init(0, max)
+	}
 
 	construct new(min, max) {
+		init(min, max)
+	}
+
+	init(min, max) {
 		_min = min
 		_max = max
 		_onMax = null
