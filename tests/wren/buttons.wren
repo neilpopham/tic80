@@ -151,22 +151,19 @@ class Game is TIC {
 	construct new() {
 		_controllers = []
 		_state = []
-		_counters = []
 
 		for (c in 0..3) {
 			_controllers.add(Controller.new(c))
 			for (b in 0..7) {
-				var index = c * 8 + b
-				_state.add(0)
-				_counters.add(null)
 				var button = _controllers[c].buttons[b]
 				button.onRelease = Fn.new { |tick|
-					 _state[index] = tick
-					 _counters[index] = Counter.new(60)
-					 _counters[index].onMax = Fn.new {
-					 	_counters[index] = null
-					 	_state[index] = 0
-					 }
+					T.trace("B" + b.toString + " Released after " + tick.toString + " ticks")
+				}
+				button.onShort = Fn.new { |tick|
+					T.trace("B" + b.toString + " Short press")
+				}
+				button.onLong = Fn.new { |tick|
+					T.trace("B" + b.toString + " Long press")
 				}
 			}
 		}
@@ -196,10 +193,6 @@ class Game is TIC {
 					)
 				}
 			}
-		}
-
-		for (counter in _counters) {
-			if (counter is Counter) counter.increment()
 		}
 	}
 }
