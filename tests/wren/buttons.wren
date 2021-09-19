@@ -1,6 +1,6 @@
-// title:  classes
+// title:  buttons
 // author: neilpopham@gmail.com
-// desc:   testing classes
+// desc:   Test for a button class
 // script: wren
 
 var T = TIC
@@ -84,7 +84,7 @@ class Counter {
 class Button {
 
 	cutoff { _cutoff }
-	tick { _counter.tick }
+	tick { (_released == false) && (_counter.tick == 0) ? _counter.max : _counter.tick }
 	disabled { _disabled }
 
 	disabled = (value) { _disabled = value }
@@ -174,9 +174,7 @@ class Game is TIC {
 
 	TIC() {
 		T.cls(0)
-
 		var directions = ["UP", "DOWN", "LEFT", "RIGHT", "A", "B", "X", "Y"]
-
 		for (c in 0..3) {
 			T.print("PLAYER " + (c + 1).toString, c * 64, 0, 11)
 			for (b in 0..7) {
@@ -187,11 +185,15 @@ class Game is TIC {
 					_controllers[c].btn(b) ? 15 : 6
 				)
 				var cutoff = _controllers[c].buttons[b].cutoff
-				var s = _state[c * 8 + b]
-				var col = s > cutoff ? 14 : 13
-				var text = (s > cutoff ? "L" : "S") + ("0" + s.toString)[-2..-1]
-				if (s > 0) {
-					T.print(text, c * 64 + 40, b * 8 + 8, col)
+				var colour = _controllers[c].buttons[b].tick > cutoff ? 9 : 13
+				T.rect(c * 64 + 30, b * 8 + 8, 30, 5, 2)
+				if (_controllers[c].buttons[b].tick) {
+					T.rect(
+						c * 64 + 60 - _controllers[c].buttons[b].tick,
+						b * 8 + 8,
+						_controllers[c].buttons[b].tick, 5,
+						colour
+					)
 				}
 			}
 		}
