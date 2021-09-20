@@ -88,6 +88,7 @@ class Button {
 	disabled { _disabled }
 
 	disabled = (value) { _disabled = value }
+	onPress = (value) { _onPress = value }
 	onRelease = (value) { _onRelease = value }
 	onLong = (value) { _onLong = value }
 	onShort = (value) { _onShort = value }
@@ -110,6 +111,7 @@ class Button {
 		_counter = Counter.new(1, 30)
 		_released = true
 		_disabled = false
+		_onPress = null
 		_onRelease = null
 		_onLong = null
 		_onShort = null
@@ -118,7 +120,12 @@ class Button {
 	check() {
 		if (T.btn(_index)) {
 			if (_disabled) return
-			if ((_counter.tick == 0) && (false ==_released)) return
+			//if ((_counter.tick == 0) && (false ==_released)) return
+			if (false == _released) {
+				if (_counter.tick == 0) return
+			} else if (_onPress is Fn) {
+				_onPress.call()
+			}
 			_counter.increment()
 			_released = false
 		} else {
@@ -156,6 +163,9 @@ class Game is TIC {
 			_controllers.add(Controller.new(c))
 			for (b in 0..7) {
 				var button = _controllers[c].buttons[b]
+				button.onPress = Fn.new {
+					T.trace("B" + b.toString + " Pressed")
+				}
 				button.onRelease = Fn.new { |tick|
 					T.trace("B" + b.toString + " Released after " + tick.toString + " ticks")
 				}
