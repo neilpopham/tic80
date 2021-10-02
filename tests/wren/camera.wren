@@ -107,10 +107,10 @@ class Camera {
 
 	update() {
 		_shift = 2
-		_min_x =  _x + _min.x - _buffer.x
-		_max_x =  _x + _min.x + _buffer.x
-		_min_y =  _y + _min.y - _buffer.y
-		_max_y =  _y + _min.y + _buffer.y
+		_min_x = _x + _min.x - _buffer.x
+		_max_x = _x + _min.x + _buffer.x
+		_min_y = _y + _min.y - _buffer.y
+		_max_y = _y + _min.y + _buffer.y
 
 		if (_min_x > _target.x) {
 			_x = _x + (_target.x - _min_x).min(_shift)
