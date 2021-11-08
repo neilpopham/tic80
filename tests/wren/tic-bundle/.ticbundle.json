@@ -16,7 +16,8 @@
 	},
 	"files":[
 		"bundle.wren",
-		"player.wren"
+		"player.wren",
+		"resources.wren"
 	],
 	"after":null
 }

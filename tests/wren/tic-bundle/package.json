@@ -3,6 +3,6 @@
     "watch": "tic-bundle"
   },
   "devDependencies": {
-    "tic-bundle": "^3.2.0"
+    "tic-bundle": "^3.2.1"
   }
 }
